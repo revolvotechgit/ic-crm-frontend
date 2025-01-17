@@ -35,7 +35,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => (
 
     <Box>
       <Stack mb={3}>
-        <CustomFormLabel htmlFor="name">Name</CustomFormLabel>
+        <CustomFormLabel htmlFor="name">Username</CustomFormLabel>
         <CustomTextField id="name" variant="outlined" fullWidth />
         <CustomFormLabel htmlFor="email">Email Adddress</CustomFormLabel>
         <CustomTextField id="email" variant="outlined" fullWidth />
