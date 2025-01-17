@@ -22,8 +22,12 @@ const Tickets = Loadable(lazy(() => import('../views/apps/tickets/Tickets')));
 const Contacts = Loadable(lazy(() => import('../views/apps/contacts/Contacts')));
 const Ecommerce = Loadable(lazy(() => import('../views/apps/eCommerce/Ecommerce')));
 const EcommerceDetail = Loadable(lazy(() => import('../views/apps/eCommerce/EcommerceDetail')));
-const EcommerceAddProduct = Loadable(lazy(() => import('../views/apps/eCommerce/EcommerceAddProduct')));
-const EcommerceEditProduct = Loadable(lazy(() => import('../views/apps/eCommerce/EcommerceEditProduct')));
+const EcommerceAddProduct = Loadable(
+  lazy(() => import('../views/apps/eCommerce/EcommerceAddProduct')),
+);
+const EcommerceEditProduct = Loadable(
+  lazy(() => import('../views/apps/eCommerce/EcommerceEditProduct')),
+);
 const EcomProductList = Loadable(lazy(() => import('../views/apps/eCommerce/EcomProductList')));
 const EcomProductCheckout = Loadable(
   lazy(() => import('../views/apps/eCommerce/EcommerceCheckout')),
@@ -147,7 +151,6 @@ const PagePricing = Loadable(lazy(() => import('../views/pages/frontend-pages/Pr
 const BlogPage = Loadable(lazy(() => import('../views/pages/frontend-pages/Blog')));
 const BlogPost = Loadable(lazy(() => import('../views/pages/frontend-pages/BlogPost')));
 
-
 //mui charts
 const BarCharts = Loadable(lazy(() => import('../views/muicharts/barcharts/page')));
 const GaugeCharts = Loadable(lazy(() => import('../views/muicharts/gaugecharts/page')));
@@ -158,11 +161,21 @@ const ScatterCharts = Loadable(lazy(() => import('../views/muicharts/scatterchar
 const SparklineCharts = Loadable(lazy(() => import('../views/muicharts/sparklinecharts/page')));
 
 //mui tree
-const SimpletreeCustomization = Loadable(lazy(() => import('../views/mui-trees/simpletree/simpletree-customization/page')));
-const SimpletreeExpansion = Loadable(lazy(() => import('../views/mui-trees/simpletree/simpletree-expansion/page')));
-const SimpletreeFocus = Loadable(lazy(() => import('../views/mui-trees/simpletree/simpletree-focus/page')));
-const SimpletreeItems = Loadable(lazy(() => import('../views/mui-trees/simpletree/simpletree-items/page')));
-const SimpletreeSelection = Loadable(lazy(() => import('../views/mui-trees/simpletree/simpletree-selection/page')));
+const SimpletreeCustomization = Loadable(
+  lazy(() => import('../views/mui-trees/simpletree/simpletree-customization/page')),
+);
+const SimpletreeExpansion = Loadable(
+  lazy(() => import('../views/mui-trees/simpletree/simpletree-expansion/page')),
+);
+const SimpletreeFocus = Loadable(
+  lazy(() => import('../views/mui-trees/simpletree/simpletree-focus/page')),
+);
+const SimpletreeItems = Loadable(
+  lazy(() => import('../views/mui-trees/simpletree/simpletree-items/page')),
+);
+const SimpletreeSelection = Loadable(
+  lazy(() => import('../views/mui-trees/simpletree/simpletree-selection/page')),
+);
 
 const Router = [
   {
@@ -255,7 +268,6 @@ const Router = [
       { path: '/react-tables/sorting', element: <ReactSortingTable /> },
       { path: '/react-tables/sticky', element: <ReactStickyTable /> },
 
-
       { path: '/muicharts/barcharts', element: <BarCharts /> },
       { path: '/muicharts/gaugecharts', element: <GaugeCharts /> },
       { path: '/muicharts/linecharts/area', element: <AreaCharts /> },
@@ -264,7 +276,10 @@ const Router = [
       { path: '/muicharts/scattercharts', element: <ScatterCharts /> },
       { path: '/muicharts/sparklinecharts', element: <SparklineCharts /> },
 
-      { path: '/mui-trees/simpletree/simpletree-customization', element: <SimpletreeCustomization /> },
+      {
+        path: '/mui-trees/simpletree/simpletree-customization',
+        element: <SimpletreeCustomization />,
+      },
       { path: '/mui-trees/simpletree/simpletree-expansion', element: <SimpletreeExpansion /> },
       { path: '/mui-trees/simpletree/simpletree-focus', element: <SimpletreeFocus /> },
       { path: '/mui-trees/simpletree/simpletree-items', element: <SimpletreeItems /> },
