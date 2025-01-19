@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Stack, Divider } from '@mui/material';
-
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
@@ -11,6 +10,7 @@ import AuthSocialButtons from './AuthSocialButtons';
 const API = 'http://localhost:3000';
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
+  const navigate = useNavigate();
   const [register, setRegister] = useState({
     username: '',
     password: '',
@@ -27,6 +27,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
       .post(`${API}/api/register`, register)
       .then((response) => {
         console.log(response.data);
+        localStorage.setItem('token', response.data.token);
+        navigate('/auth/login');
       })
       .catch((error) => {
         console.log(error);

@@ -8,9 +8,9 @@ import {
   Stack,
   Divider,
 } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
@@ -21,6 +21,7 @@ import AuthSocialButtons from './AuthSocialButtons';
 const API = 'http://localhost:3000';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+  const navigate = useNavigate();
   const [login, setLogin] = useState({
     username: '',
     password: '',
@@ -36,6 +37,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       .post(`${API}/api/login`, login)
       .then((response) => {
         console.log(response.data);
+        localStorage.setItem('token', response.data.token);
+        navigate('/dashboards/modern');
       })
       .catch((error) => {
         console.log(error);
