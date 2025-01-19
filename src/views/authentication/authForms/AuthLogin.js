@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -8,7 +8,9 @@ import {
   Stack,
   Divider,
 } from '@mui/material';
-import { Link } from 'react-router';
+
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
@@ -16,76 +18,108 @@ import CustomFormLabel from '../../../components/forms/theme-elements/CustomForm
 
 import AuthSocialButtons from './AuthSocialButtons';
 
-const AuthLogin = ({ title, subtitle, subtext }) => (
-  <>
-    {title ? (
-      <Typography fontWeight="700" variant="h3" mb={1}>
-        {title}
-      </Typography>
-    ) : null}
+const API = 'http://localhost:3000';
 
-    {subtext}
+const AuthLogin = ({ title, subtitle, subtext }) => {
+  const [login, setLogin] = useState({
+    username: '',
+    password: '',
+  });
 
-    <AuthSocialButtons title="Sign in with" />
-    <Box mt={3}>
-      <Divider>
-        <Typography
-          component="span"
-          color="textSecondary"
-          variant="h6"
-          fontWeight="400"
-          position="relative"
-          px={2}
-        >
-          or sign in with
+  const handleInput = (event) => {
+    setLogin({ ...login, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios
+      .post(`${API}/api/login`, login)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  return (
+    <>
+      {title ? (
+        <Typography fontWeight="700" variant="h3" mb={1}>
+          {title}
         </Typography>
-      </Divider>
-    </Box>
+      ) : null}
 
-    <Stack>
-      <Box>
-        <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
-        <CustomTextField id="username" variant="outlined" fullWidth />
+      {subtext}
+
+      <AuthSocialButtons title="Sign in with" />
+      <Box mt={3}>
+        <Divider>
+          <Typography
+            component="span"
+            color="textSecondary"
+            variant="h6"
+            fontWeight="400"
+            position="relative"
+            px={2}
+          >
+            or sign in with
+          </Typography>
+        </Divider>
       </Box>
-      <Box>
-        <CustomFormLabel htmlFor="password">Password</CustomFormLabel>
-        <CustomTextField id="password" type="password" variant="outlined" fullWidth />
-      </Box>
-      <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
-        <FormGroup>
-          <FormControlLabel
-            control={<CustomCheckbox defaultChecked />}
-            label="Remeber this Device"
+
+      <Stack component="form" onSubmit={handleSubmit}>
+        <Box>
+          <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
+          <CustomTextField
+            id="username"
+            name="username"
+            value={login.username}
+            onChange={handleInput}
+            variant="outlined"
+            fullWidth
           />
-        </FormGroup>
-        <Typography
-          component={Link}
-          to="/auth/forgot-password"
-          fontWeight="500"
-          sx={{
-            textDecoration: 'none',
-            color: 'primary.main',
-          }}
-        >
-          Forgot Password ?
-        </Typography>
+        </Box>
+        <Box>
+          <CustomFormLabel htmlFor="password">Password</CustomFormLabel>
+          <CustomTextField
+            id="password"
+            name="password"
+            value={login.password}
+            onChange={handleInput}
+            type="password"
+            variant="outlined"
+            fullWidth
+          />
+        </Box>
+        <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
+          <FormGroup>
+            <FormControlLabel
+              control={<CustomCheckbox defaultChecked />}
+              label="Remeber this Device"
+            />
+          </FormGroup>
+          <Typography
+            component={Link}
+            to="/auth/forgot-password"
+            fontWeight="500"
+            sx={{
+              textDecoration: 'none',
+              color: 'primary.main',
+            }}
+          >
+            Forgot Password ?
+          </Typography>
+        </Stack>
+        <Box>
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
+            Sign In
+          </Button>
+        </Box>
       </Stack>
-    </Stack>
-    <Box>
-      <Button
-        color="primary"
-        variant="contained"
-        size="large"
-        fullWidth
-        component={Link}
-        to="/"
-        type="submit"
-      >
-        Sign In
-      </Button>
-    </Box>
-    {subtitle}
-  </>
-);
+      {subtitle}
+    </>
+  );
+};
 
 export default AuthLogin;
