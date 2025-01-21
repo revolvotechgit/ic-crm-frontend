@@ -11,7 +11,14 @@ const AuthForgotPassword = () => (
       <CustomFormLabel htmlFor="reset-email">Email Adddress</CustomFormLabel>
       <CustomTextField id="reset-email" variant="outlined" fullWidth />
 
-      <Button color="primary" variant="contained" size="large" fullWidth component={Link} to="/">
+      <Button
+        color="primary"
+        variant="contained"
+        size="large"
+        fullWidth
+        component={Link}
+        to="/auth/ResetCode"
+      >
         Forgot Password
       </Button>
       <Button color="primary" size="large" fullWidth component={Link} to="/auth/login">
