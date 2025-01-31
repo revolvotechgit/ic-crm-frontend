@@ -70,21 +70,39 @@ const Login = () => (
               </Typography>
             }
             subtitle={
-              <Stack direction="row" spacing={1} mt={3}>
-                <Typography color="textSecondary" variant="h6" fontWeight="500">
-                  Dont have an account?
-                </Typography>
-                <Typography
-                  component={Link}
-                  to="/auth/register"
-                  fontWeight="500"
-                  sx={{
-                    textDecoration: 'none',
-                    color: 'primary.main',
-                  }}
-                >
-                  Create an account
-                </Typography>
+              <Stack spacing={2} mt={3}>
+                <Stack direction="row" spacing={1}>
+                  <Typography color="textSecondary" variant="h6" fontWeight="500">
+                    Dont have an account?
+                  </Typography>
+                  <Typography
+                    component={Link}
+                    to="/auth/register"
+                    fontWeight="500"
+                    sx={{
+                      textDecoration: 'none',
+                      color: 'primary.main',
+                    }}
+                  >
+                    Create an account
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                  <Typography color="textSecondary" variant="h6" fontWeight="500">
+                    Having trouble logging in?
+                  </Typography>
+                  <Typography
+                    component={Link}
+                    to="/auth/forgot-password"
+                    fontWeight="500"
+                    sx={{
+                      textDecoration: 'none',
+                      color: 'primary.main',
+                    }}
+                  >
+                    Reset password
+                  </Typography>
+                </Stack>
               </Stack>
             }
           />

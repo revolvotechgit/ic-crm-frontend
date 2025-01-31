@@ -102,17 +102,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               label="Remeber this Device"
             />
           </FormGroup>
-          <Typography
-            component={Link}
-            to="/auth/forgot-password"
-            fontWeight="500"
-            sx={{
-              textDecoration: 'none',
-              color: 'primary.main',
-            }}
-          >
-            Forgot Password ?
-          </Typography>
         </Stack>
         <Box>
           <Button color="primary" variant="contained" size="large" fullWidth type="submit">

@@ -88,19 +88,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             onChange={handleInput}
           />
         </Box>
-        <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
-          <Typography
-            component={Link}
-            to="/auth/login"
-            fontWeight="500"
-            sx={{
-              textDecoration: 'none',
-              color: 'primary.main',
-            }}
-          >
-            Already have an account?
-          </Typography>
-        </Stack>
+        <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}></Stack>
         <Box>
           <Button color="primary" variant="contained" size="large" fullWidth type="submit">
             Sign Up
