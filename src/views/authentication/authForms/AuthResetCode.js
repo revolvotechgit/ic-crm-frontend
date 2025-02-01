@@ -92,7 +92,7 @@ const AuthResetCode = ({ title, subtitle, subtext }) => {
         </Typography>
 
         <form onSubmit={handleSubmit}>
-          <Stack direction="row" spacing={1} justifyContent="center" mb={3}>
+          <Stack direction="row" spacing={0.5} justifyContent="center" mb={2}>
             {code.map((char, index) => (
               <CodeInput
                 key={index}

@@ -70,7 +70,7 @@ const Modern = () => {
         </Grid>
       </Grid>
       {/* column */}
-      <Welcome />
+      {/* <Welcome /> */}
     </Box>
   );
 };
