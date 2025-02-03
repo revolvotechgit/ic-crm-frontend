@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -7,16 +7,15 @@ import {
   Button,
   Stack,
   Divider,
+  Alert,
+  AlertTitle,
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-
 import axios from 'axios';
 
 import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
-
-import AuthSocialButtons from './AuthSocialButtons';
 
 const API = 'http://localhost:3000';
 
@@ -26,9 +25,16 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     username: '',
     password: '',
   });
+  const [loginStatus, setLoginStatus] = useState({
+    success: false,
+    error: false,
+    message: '',
+  });
 
   const handleInput = (event) => {
     setLogin({ ...login, [event.target.name]: event.target.value });
+    // Clear any previous status when user starts typing
+    setLoginStatus({ success: false, error: false, message: '' });
   };
 
   const handleSubmit = (event) => {
@@ -38,10 +44,23 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       .then((response) => {
         console.log(response.data);
         localStorage.setItem('token', response.data.token);
-        navigate('/dashboards/modern');
+        setLoginStatus({
+          success: true,
+          error: false,
+          message: 'Login successful! Redirecting...',
+        });
+        // Delay navigation to show success message
+        setTimeout(() => {
+          navigate('/dashboards/modern');
+        }, 1500);
       })
       .catch((error) => {
         console.log(error);
+        setLoginStatus({
+          success: false,
+          error: true,
+          message: error.response?.data?.message || 'Invalid credentials',
+        });
       });
   };
 
@@ -55,21 +74,26 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
       {subtext}
 
-      <AuthSocialButtons title="Sign in with" />
-      <Box mt={3}>
-        <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-            px={2}
-          >
-            or sign in with
-          </Typography>
-        </Divider>
-      </Box>
+      <Stack spacing={2} mb={3}>
+        {loginStatus.error && (
+          <Alert severity="error">
+            <AlertTitle>Login failed</AlertTitle>
+            {loginStatus.message}
+          </Alert>
+        )}
+        {loginStatus.success && (
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            {loginStatus.message}
+          </Alert>
+        )}
+        {!loginStatus.error && !loginStatus.success && (
+          <Alert severity="info">
+            <AlertTitle>Welcome</AlertTitle>
+            Use your username and password to login
+          </Alert>
+        )}
+      </Stack>
 
       <Stack component="form" onSubmit={handleSubmit}>
         <Box>
@@ -99,12 +123,19 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           <FormGroup>
             <FormControlLabel
               control={<CustomCheckbox defaultChecked />}
-              label="Remeber this Device"
+              label="Remember this Device"
             />
           </FormGroup>
         </Stack>
         <Box>
-          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
+          <Button
+            color="primary"
+            variant="contained"
+            size="large"
+            fullWidth
+            type="submit"
+            disabled={loginStatus.success}
+          >
             Sign In
           </Button>
         </Box>

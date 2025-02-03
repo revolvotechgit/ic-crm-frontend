@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -73,35 +73,47 @@ const Login = () => (
               <Stack spacing={2} mt={3}>
                 <Stack direction="row" spacing={1}>
                   <Typography color="textSecondary" variant="h6" fontWeight="500">
-                    Dont have an account?
+                    Don't have an account?
                   </Typography>
-                  <Typography
-                    component={Link}
+                  <Link
                     to="/auth/register"
-                    fontWeight="500"
-                    sx={{
+                    style={{
                       textDecoration: 'none',
-                      color: 'primary.main',
                     }}
                   >
-                    Create an account
-                  </Typography>
+                    <Typography
+                      variant="h6"
+                      fontWeight="500"
+                      sx={{
+                        color: 'primary.main',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Create an account
+                    </Typography>
+                  </Link>
                 </Stack>
                 <Stack direction="row" spacing={1}>
                   <Typography color="textSecondary" variant="h6" fontWeight="500">
                     Having trouble logging in?
                   </Typography>
-                  <Typography
-                    component={Link}
+                  <Link
                     to="/auth/forgot-password"
-                    fontWeight="500"
-                    sx={{
+                    style={{
                       textDecoration: 'none',
-                      color: 'primary.main',
                     }}
                   >
-                    Reset password
-                  </Typography>
+                    <Typography
+                      variant="h6"
+                      fontWeight="500"
+                      sx={{
+                        color: 'primary.main',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Reset password
+                    </Typography>
+                  </Link>
                 </Stack>
               </Stack>
             }
