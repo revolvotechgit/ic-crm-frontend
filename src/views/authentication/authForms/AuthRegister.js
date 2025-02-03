@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Stack, Divider } from '@mui/material';
+import { Box, Typography, Button, Stack, Alert, AlertTitle, Divider } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,26 +13,78 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
   const navigate = useNavigate();
   const [register, setRegister] = useState({
     username: '',
+    email: '',
     password: '',
     role: 'agent',
   });
 
+  const [registerStatus, setRegisterStatus] = useState({
+    success: false,
+    error: false,
+    message: '',
+  });
+
   const handleInput = (event) => {
     setRegister({ ...register, [event.target.name]: event.target.value });
+    // Clear any previous status when user starts typing
+    setRegisterStatus({ success: false, error: false, message: '' });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios
-      .post(`${API}/api/register`, register)
-      .then((response) => {
-        console.log(response.data);
-        localStorage.setItem('token', response.data.token);
-        navigate('/auth/login');
-      })
-      .catch((error) => {
-        console.log(error);
+  const validateForm = () => {
+    const errors = [];
+
+    if (!register.username || register.username.length < 3) {
+      errors.push('Username must be at least 3 characters');
+    }
+
+    if (!register.email || !register.email.includes('@')) {
+      errors.push('Please enter a valid email address');
+    }
+
+    if (!register.password || register.password.length < 6) {
+      errors.push('Password must be at least 6 characters');
+    }
+
+    if (errors.length > 0) {
+      setRegisterStatus({
+        success: false,
+        error: true,
+        message: errors.join('. '),
       });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API}/api/register`, register);
+      console.log(response.data);
+      setRegisterStatus({
+        success: true,
+        error: false,
+        message: 'Registration successful! Redirecting to login...',
+      });
+
+      // Delay navigation to show success message
+      setTimeout(() => {
+        navigate('/auth/login', { replace: true });
+      }, 1500);
+    } catch (error) {
+      console.error('Registration error:', error);
+      setRegisterStatus({
+        success: false,
+        error: true,
+        message: error.response?.data?.message || 'Registration failed. Please try again.',
+      });
+    }
   };
 
   return (
@@ -54,9 +106,30 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         </Divider>
       </Box>
 
+      <Stack spacing={2} mb={3}>
+        {registerStatus.error && (
+          <Alert severity="error">
+            <AlertTitle>Registration failed</AlertTitle>
+            {registerStatus.message}
+          </Alert>
+        )}
+        {registerStatus.success && (
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            {registerStatus.message}
+          </Alert>
+        )}
+        {!registerStatus.error && !registerStatus.success && (
+          <Alert severity="info">
+            <AlertTitle>Welcome</AlertTitle>
+            Please fill in your information to create an account
+          </Alert>
+        )}
+      </Stack>
+
       <Stack component="form" onSubmit={handleSubmit}>
         <Box>
-          <CustomFormLabel htmlFor="name">Name</CustomFormLabel>
+          <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
           <CustomTextField
             id="username"
             name="username"
@@ -71,8 +144,10 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
           <CustomTextField
             id="email"
             name="email"
+            type="email"
             variant="outlined"
             fullWidth
+            value={register.email}
             onChange={handleInput}
           />
         </Box>
@@ -90,7 +165,14 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         </Box>
         <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}></Stack>
         <Box>
-          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
+          <Button
+            color="primary"
+            variant="contained"
+            size="large"
+            fullWidth
+            type="submit"
+            disabled={registerStatus.success}
+          >
             Sign Up
           </Button>
         </Box>
