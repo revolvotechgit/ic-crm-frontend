@@ -16,6 +16,7 @@ import axios from 'axios';
 import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
+import { WindowRounded } from '@mui/icons-material';
 
 const API = 'http://localhost:3000';
 
@@ -52,6 +53,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         // Delay navigation to show success message
         setTimeout(() => {
           navigate('/dashboards/modern');
+          window.location.href = '/dashboards/modern';
         }, 1500);
       })
       .catch((error) => {
