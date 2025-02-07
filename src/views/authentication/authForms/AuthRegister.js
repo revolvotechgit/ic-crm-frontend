@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
-import AuthSocialButtons from './AuthSocialButtons';
+// import AuthSocialButtons from './AuthSocialButtons';  // Commented out social buttons
 
 const API = 'http://localhost:3000';
 
@@ -97,14 +97,15 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
       {subtext}
 
-      <AuthSocialButtons title="Sign up with" />
+      {/* Commented out social buttons section */}
+      {/* <AuthSocialButtons title="Sign up with" />
       <Box mt={3}>
         <Divider>
           <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" px={2}>
             or sign up with
           </Typography>
         </Divider>
-      </Box>
+      </Box> */}
 
       <Stack spacing={2} mb={3}>
         {registerStatus.error && (
