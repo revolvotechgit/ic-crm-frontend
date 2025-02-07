@@ -134,6 +134,9 @@ const ForgotPassword = Loadable(lazy(() => import('../views/authentication/auth1
 const ForgotPassword2 = Loadable(
   lazy(() => import('../views/authentication/auth2/ForgotPassword2')),
 );
+const authLogin = Loadable(lazy(() => import('../views/authentication/authForms/AuthLogin')));
+const authRegister = Loadable(lazy(() => import('../views/authentication/authForms/AuthRegister')));
+
 const TwoSteps = Loadable(lazy(() => import('../views/authentication/auth1/TwoSteps')));
 const TwoSteps2 = Loadable(lazy(() => import('../views/authentication/auth2/TwoSteps2')));
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
@@ -312,6 +315,8 @@ const Router = [
       { path: '/frontend-pages/pricing', element: <PagePricing /> },
       { path: '/frontend-pages/blog', element: <BlogPage /> },
       { path: '/frontend-pages/blog/detail/:id', element: <BlogPost /> },
+      { path: '/auth/login', element: <authLogin /> },
+      { path: '/auth/register', element: <authRegister /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
