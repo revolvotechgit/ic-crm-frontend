@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -67,50 +66,47 @@ const Login = () => {
           alignItems="center"
         >
           <Box p={4}>
-            <AuthLogin
-              title="Welcome to CRM"
-              subtext={
-                <Typography variant="subtitle1" color="textSecondary" mb={1}>
-                  Your Admin Dashboard
+            <Typography variant="h4" mb={2}>
+              Welcome to CRM
+            </Typography>
+            <Typography variant="subtitle1" color="textSecondary" mb={3}>
+              Your Admin Dashboard
+            </Typography>
+            <AuthLogin />
+            <Stack spacing={2} mt={3}>
+              <Stack direction="row" spacing={1}>
+                <Typography color="textSecondary" variant="h6" fontWeight="500">
+                  Don't have an account?
                 </Typography>
-              }
-              subtitle={
-                <Stack spacing={2} mt={3}>
-                  <Stack direction="row" spacing={1}>
-                    <Typography color="textSecondary" variant="h6" fontWeight="500">
-                      Don't have an account?
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      fontWeight="500"
-                      sx={{
-                        color: 'primary.main',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => handleNavigation('/auth/register')}
-                    >
-                      Create an account
-                    </Typography>
-                  </Stack>
-                  <Stack direction="row" spacing={1}>
-                    <Typography color="textSecondary" variant="h6" fontWeight="500">
-                      Having trouble logging in?
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      fontWeight="500"
-                      sx={{
-                        color: 'primary.main',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => handleNavigation('/auth/forgot-password')}
-                    >
-                      Reset password
-                    </Typography>
-                  </Stack>
-                </Stack>
-              }
-            />
+                <Typography
+                  variant="h6"
+                  fontWeight="500"
+                  sx={{
+                    color: 'primary.main',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleNavigation('/auth/register')}
+                >
+                  Create an account
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={1}>
+                <Typography color="textSecondary" variant="h6" fontWeight="500">
+                  Having trouble logging in?
+                </Typography>
+                <Typography
+                  variant="h6"
+                  fontWeight="500"
+                  sx={{
+                    color: 'primary.main',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleNavigation('/auth/forgot-password')}
+                >
+                  Reset password
+                </Typography>
+              </Stack>
+            </Stack>
           </Box>
         </Grid>
       </Grid>

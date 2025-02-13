@@ -1,160 +1,90 @@
-import { createContext, useEffect, useReducer } from 'react';
-
-// utils
+import { createContext, useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'src/utils/axios';
-import { isValidToken, setSession } from './Jwt';
 
-// ----------------------------------------------------------------------
+export const AuthContext = createContext(null);
 
-const initialState = {
-  isAuthenticated: false,
-  isInitialized: false,
-  user: null,
-};
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [user, setUser] = useState(null);
 
-const handlers = {
-  INITIALIZE: (state, action) => {
-    const { isAuthenticated, user } = action.payload;
+  // Use refs to break circular dependencies
+  const logoutRef = useRef();
 
-    return {
-      ...state,
-      isAuthenticated,
-      isInitialized: true,
-      user,
-    };
-  },
-  LOGIN: (state, action) => {
-    const { user } = action.payload;
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    axios.defaults.headers.common.Authorization = '';
+    setUser(null);
+    setIsAuthenticated(false);
+  }, []);
 
-    return {
-      ...state,
-      isAuthenticated: true,
-      user,
-    };
-  },
-  LOGOUT: (state) => ({
-    ...state,
-    isAuthenticated: false,
-    user: null,
-  }),
-  REGISTER: (state, action) => {
-    const { user } = action.payload;
+  // Store logout in ref to avoid dependency cycles
+  logoutRef.current = logout;
 
-    return {
-      ...state,
-      isAuthenticated: true,
-      user,
-    };
-  },
-};
+  const login = useCallback(async (token) => {
+    try {
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-const reducer = (state, action) =>
-  handlers[action.type] ? handlers[action.type](state, action) : state;
+      // Get user data after login
+      const response = await axios.get('/api/account/my-account');
+      const userData = response.data;
 
-const AuthContext = createContext({
-  ...initialState,
-  platform: 'JWT',
-  signup: () => Promise.resolve(),
-  signin: () => Promise.resolve(),
-  logout: () => Promise.resolve(),
-});
+      setUser(userData);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Login error:', error);
+      logoutRef.current();
+      throw error;
+    }
+  }, []); // No dependencies needed now
 
-function AuthProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
+  // Initialize auth state from token
   useEffect(() => {
     const initialize = async () => {
       try {
-        const accessToken = window.localStorage.getItem('accessToken');
+        const token = localStorage.getItem('token');
 
-        if (accessToken && isValidToken(accessToken)) {
-          setSession(accessToken);
-
-          const response = await axios.get('/api/account/my-account');
-          const { user } = response.data;
-
-          dispatch({
-            type: 'INITIALIZE',
-            payload: {
-              isAuthenticated: true,
-              user,
-            },
-          });
-        } else {
-          dispatch({
-            type: 'INITIALIZE',
-            payload: {
-              isAuthenticated: false,
-              user: null,
-            },
-          });
+        if (token) {
+          await login(token);
         }
-      } catch (err) {
-        console.error(err);
-        dispatch({
-          type: 'INITIALIZE',
-          payload: {
-            isAuthenticated: false,
-            user: null,
-          },
-        });
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+      } finally {
+        setIsInitialized(true);
       }
     };
 
     initialize();
-  }, []);
+  }, [login]);
 
-  const signin = async (email, password) => {
-    const response = await axios.post('/api/account/login', {
-      email,
-      password,
-    });
-    const { accessToken, user } = response.data;
-    setSession(accessToken);
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user,
-      },
-    });
-  };
-
-  const signup = async (email, password, firstName, lastName) => {
-    const response = await axios.post('/api/account/register', {
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    const { accessToken, user } = response.data;
-
-    window.localStorage.setItem('accessToken', accessToken);
-    dispatch({
-      type: 'REGISTER',
-      payload: {
-        user,
-      },
-    });
-  };
-
-  const logout = async () => {
-    setSession(null);
-    dispatch({ type: 'LOGOUT' });
-  };
+  const register = useCallback(
+    async (userData) => {
+      try {
+        const response = await axios.post('/api/register', userData);
+        const { token } = response.data;
+        await login(token);
+      } catch (error) {
+        console.error('Registration error:', error);
+        throw error;
+      }
+    },
+    [login],
+  );
 
   return (
     <AuthContext.Provider
       value={{
-        ...state,
-        method: 'jwt',
-        signin,
+        isAuthenticated,
+        isInitialized,
+        user,
+        login,
         logout,
-        signup,
+        register,
+        method: 'jwt',
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-}
-
-export { AuthContext, AuthProvider };
+};

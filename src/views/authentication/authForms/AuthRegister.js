@@ -6,11 +6,13 @@ import axios from 'axios';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 // import AuthSocialButtons from './AuthSocialButtons';  // Commented out social buttons
+import useAuth from '../../../guards/authGuard/UseAuth';
 
 const API = 'http://localhost:3000';
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [register, setRegister] = useState({
     username: '',
     email: '',
@@ -67,15 +69,20 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     try {
       const response = await axios.post(`${API}/api/register`, register);
       console.log(response.data);
+
+      // Login the user after successful registration
+      if (response.data.token) {
+        login(response.data.token);
+      }
+
       setRegisterStatus({
         success: true,
         error: false,
-        message: 'Registration successful! Redirecting to login...',
+        message: 'Registration successful! Redirecting...',
       });
 
-      // Delay navigation to show success message
       setTimeout(() => {
-        navigate('/auth/login', { replace: true });
+        navigate('/dashboards/modern', { replace: true });
       }, 1500);
     } catch (error) {
       console.error('Registration error:', error);

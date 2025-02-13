@@ -1,16 +1,18 @@
-import { useNavigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router-dom';
 import useAuth from './UseAuth';
-import { useEffect } from 'react';
 
 const AuthGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/auth/login', { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+  // Check for token in localStorage as a fallback
+  const token = localStorage.getItem('token');
+  const isAuthorized = isAuthenticated || !!token;
+
+  if (!isAuthorized) {
+    // Redirect to login but save the attempted location
+    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+  }
 
   return children;
 };

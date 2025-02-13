@@ -7,17 +7,17 @@ import Spinner from './views/spinner/Spinner';
 import './_mockApis';
 import './utils/i18n';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from 'src/guards/jwt/JwtContext'; // change is here
+import { AuthProvider } from './guards/jwt/JwtContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-    <Suspense fallback={<Spinner />}>
+    <AuthProvider>
       <BrowserRouter>
-        <AuthProvider>
+        <Suspense fallback={<Spinner />}>
           <App />
-        </AuthProvider>
+        </Suspense>
       </BrowserRouter>
-    </Suspense>
+    </AuthProvider>
   </Provider>,
 );
