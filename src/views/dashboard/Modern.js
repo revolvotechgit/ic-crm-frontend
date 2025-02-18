@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import useAuth from '../../guards/authGuard/UseAuth';
 
 import TopCards from '../../components/dashboards/modern/TopCards';
 import RevenueUpdates from '../../components/dashboards/modern/RevenueUpdates';
@@ -16,6 +17,20 @@ import TopPerformers from '../../components/dashboards/modern/TopPerformers';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 
 const Modern = () => {
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      window.location.href = '/auth/login';
+      return;
+    }
+  }, [isAuthenticated]);
+
+  // If not authenticated, don't render the dashboard
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <Box>
       <Grid container spacing={3}>

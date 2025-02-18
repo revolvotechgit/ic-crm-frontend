@@ -1,5 +1,5 @@
 import React from 'react';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -18,7 +18,11 @@ const Login = () => {
     <PageContainer title="Login" description="this is Login page">
       <Grid container spacing={0} sx={{ overflowX: 'hidden' }}>
         <Grid
-          size={{ xs: 12, sm: 12, lg: 7, xl: 8 }}
+          item
+          xs={12}
+          sm={12}
+          lg={7}
+          xl={8}
           sx={{
             position: 'relative',
             '&:before': {
@@ -60,7 +64,11 @@ const Login = () => {
           </Box>
         </Grid>
         <Grid
-          size={{ xs: 12, sm: 12, lg: 5, xl: 4 }}
+          item
+          xs={12}
+          sm={12}
+          lg={5}
+          xl={4}
           display="flex"
           justifyContent="center"
           alignItems="center"
