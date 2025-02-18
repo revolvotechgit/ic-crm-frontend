@@ -1,150 +1,123 @@
-import React, { useState, useRef } from 'react';
-import { Box, Typography, Button, Stack, styled } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Button, Stack, FormHelperText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
-const CodeInput = styled(CustomTextField)(({ theme }) => ({
-  '& .MuiInputBase-input': {
-    width: '50px',
-    height: '50px',
-    padding: '0',
-    fontSize: '24px',
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    backgroundColor: theme.palette.background.paper,
-  },
-  '& .MuiOutlinedInput-root': {
-    marginRight: '8px',
-    marginLeft: '8px',
-    '&.Mui-focused': {
-      '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  },
-}));
-
-const AuthResetCode = ({ title, subtitle, subtext }) => {
+const AuthResetCode = () => {
+  const [code, setCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [code, setCode] = useState(['', '', '', '', '', '']);
-  const inputs = useRef([]);
 
-  const handleInput = (e, index) => {
-    const value = e.target.value.toUpperCase();
-    if (value.length <= 1 && /^[0-9A-Z]*$/.test(value)) {
-      const newCode = [...code];
-      newCode[index] = value;
-      setCode(newCode);
-
-      if (value && index < 5) {
-        inputs.current[index + 1].focus();
-      }
-    }
-  };
-
-  const handleKeyDown = (e, index) => {
-    if (e.key === 'Backspace' && !code[index] && index > 0) {
-      inputs.current[index - 1].focus();
-    }
-  };
-
-  const handlePaste = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').toUpperCase().slice(0, 6);
-    const pastedChars = pastedData.split('').filter((char) => /^[0-9A-Z]$/.test(char));
+    setError('');
+    setLoading(true);
 
-    const newCode = [...code];
-    pastedChars.forEach((char, index) => {
-      if (index < 6) {
-        newCode[index] = char;
-      }
-    });
-    setCode(newCode);
-
-    const nextEmptyIndex = newCode.findIndex((char) => !char);
-    if (nextEmptyIndex !== -1) {
-      inputs.current[nextEmptyIndex].focus();
-    } else {
-      inputs.current[5].focus();
+    const email = sessionStorage.getItem('resetEmail');
+    if (!email) {
+      setError('Email not found. Please start the reset process again.');
+      setLoading(false);
+      return;
     }
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const resetCode = code.join('');
-    console.log('Reset Code:', resetCode);
-    navigate('/auth/login');
+    try {
+      // First verify the code
+      const verifyResponse = await fetch('http://localhost:3000/api/auth/verify-reset-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code }),
+      });
+
+      const verifyData = await verifyResponse.json();
+
+      if (verifyData.success) {
+        // If code is verified, reset the password
+        const resetResponse = await fetch('http://localhost:3000/api/auth/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, code, newPassword }),
+        });
+
+        const resetData = await resetResponse.json();
+
+        if (resetData.success) {
+          sessionStorage.removeItem('resetEmail');
+          navigate('/auth/login');
+        } else {
+          setError(resetData.message || 'Failed to reset password');
+        }
+      } else {
+        setError(verifyData.message || 'Invalid code');
+      }
+    } catch (err) {
+      setError('Failed to connect to server');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <>
-      {title ? (
-        <Typography fontWeight="700" variant="h3" mb={1}>
-          {title}
-        </Typography>
-      ) : null}
-
-      {subtext}
-
-      <Box mt={4}>
-        <Typography variant="h6" fontWeight="400" mb={3}>
-          Enter 6 character verification code
-        </Typography>
-
-        <form onSubmit={handleSubmit}>
-          <Stack direction="row" spacing={0.5} justifyContent="center" mb={2}>
-            {code.map((char, index) => (
-              <CodeInput
-                key={index}
-                inputRef={(el) => (inputs.current[index] = el)}
-                variant="outlined"
-                size="small"
-                value={char}
-                onChange={(e) => handleInput(e, index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-                onPaste={handlePaste}
-                autoFocus={index === 0}
-                autoComplete="off"
-                inputProps={{
-                  maxLength: 1,
-                  style: { padding: 0 },
-                }}
-              />
-            ))}
-          </Stack>
-
+    <form onSubmit={handleSubmit}>
+      <Stack spacing={3}>
+        <Box>
+          <CustomTextField
+            fullWidth
+            id="code"
+            variant="outlined"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="Enter 6-digit code"
+            disabled={loading}
+          />
+        </Box>
+        <Box>
+          <CustomTextField
+            fullWidth
+            id="newPassword"
+            type="password"
+            variant="outlined"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Enter new password"
+            disabled={loading}
+          />
+        </Box>
+        {error && (
+          <FormHelperText error>{error}</FormHelperText>
+        )}
+        <Button
+          color="primary"
+          variant="contained"
+          size="large"
+          fullWidth
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? 'Resetting...' : 'Reset Password'}
+        </Button>
+        <Typography
+          color="textSecondary"
+          variant="subtitle2"
+          textAlign="center"
+          mt={2}
+        >
+          Didn't receive the code?{' '}
           <Button
             color="primary"
-            variant="contained"
-            size="large"
-            fullWidth
-            type="submit"
-            disabled={code.some((char) => !char)}
+            onClick={() => navigate('/auth/forgot-password')}
+            sx={{ textTransform: 'none' }}
           >
-            Verify Code
+            Resend
           </Button>
-        </form>
-      </Box>
-
-      <Stack direction="row" spacing={1} justifyContent="center" mt={3}>
-        <Typography color="textSecondary">Didn't receive the code?</Typography>
-        <Typography
-          component="span"
-          sx={{
-            cursor: 'pointer',
-            color: 'primary.main',
-            fontWeight: 500,
-          }}
-          onClick={() => {
-            console.log('Resend code');
-          }}
-        >
-          Resend
         </Typography>
       </Stack>
-
-      {subtitle}
-    </>
+    </form>
   );
 };
 
