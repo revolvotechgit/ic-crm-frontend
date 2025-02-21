@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Box, Button, Stack, FormHelperText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
 const AuthForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +26,7 @@ const AuthForgotPassword = () => {
       if (data.success) {
         // Store email for the reset code page
         sessionStorage.setItem('resetEmail', email);
-        navigate('/auth/reset-code');
+        window.location.href = '/auth/reset-code';
       } else {
         setError(data.message || 'Failed to send reset code');
       }
