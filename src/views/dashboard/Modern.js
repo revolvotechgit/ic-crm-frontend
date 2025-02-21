@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import useAuth from '../../guards/authGuard/UseAuth';
+import { useNavigate } from 'react-router-dom';
 
 import TopCards from '../../components/dashboards/modern/TopCards';
 import RevenueUpdates from '../../components/dashboards/modern/RevenueUpdates';
@@ -18,15 +19,16 @@ import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 
 const Modern = () => {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      window.location.href = '/auth/login';
+      navigate('/auth/login');
       return;
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
-  // If not authenticated, don't render the dashboard
+  // If not authenticated, return early
   if (!isAuthenticated) {
     return null;
   }

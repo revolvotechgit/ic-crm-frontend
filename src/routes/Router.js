@@ -57,7 +57,7 @@ const Router = [
     path: '/',
     element: <BlankLayout />,
     children: [
-      { path: '/', element: <Navigate to="/auth/login" /> },
+      { path: '/', element: <Navigate to="/auth/login" replace /> },
       { path: '/auth/login', element: <Login /> },
       { path: '/auth/register', element: <Register /> },
       { path: '/auth/login2', element: <Login2 /> },
@@ -99,7 +99,7 @@ const Router = [
   },
   {
     path: '*',
-    element: <Navigate to="/auth/404" />,
+    element: <Navigate to="/auth/404" replace />,
   },
 ];
 
