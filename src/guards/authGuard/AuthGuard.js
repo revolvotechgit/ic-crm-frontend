@@ -1,17 +1,12 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import React from 'react';
 import useAuth from './UseAuth';
+import { Navigate } from 'react-router-dom';
 
 const AuthGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  const location = useLocation();
 
-  // Check for token in localStorage as a fallback
-  const token = localStorage.getItem('token');
-  const isAuthorized = isAuthenticated || !!token;
-
-  if (!isAuthorized) {
-    // Redirect to login but save the attempted location
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
   }
 
   return children;

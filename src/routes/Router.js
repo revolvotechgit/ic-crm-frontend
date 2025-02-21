@@ -1,8 +1,9 @@
 import React, { lazy } from 'react';
-import { Navigate, createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter, Outlet } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import AuthGuard from '../guards/authGuard/AuthGuard';
+import LoadingBar from '../LoadingBar';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -52,57 +53,68 @@ const PagePricing = Loadable(lazy(() => import('../views/pages/frontend-pages/Pr
 const BlogPage = Loadable(lazy(() => import('../views/pages/frontend-pages/Blog')));
 const BlogPost = Loadable(lazy(() => import('../views/pages/frontend-pages/BlogPost')));
 
-const Router = [
+// Create a root layout component that includes LoadingBar
+const RootLayout = () => (
+  <>
+    <LoadingBar />
+    <Outlet />
+  </>
+);
+
+const Router = createBrowserRouter([
   {
-    path: '/',
-    element: <BlankLayout />,
+    element: <RootLayout />,
     children: [
-      { path: '/', element: <Navigate to="/auth/login" replace /> },
-      { path: '/auth/login', element: <Login /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/login2', element: <Login2 /> },
-      { path: '/auth/forgot-password', element: <ForgotPassword /> },
-      { path: '/auth/forgot-password2', element: <ForgotPassword2 /> },
-      { path: '/auth/two-steps', element: <TwoSteps /> },
-      { path: '/auth/two-steps2', element: <TwoSteps2 /> },
-      { path: '/auth/reset-code', element: <ResetCode /> },
-      { path: '/auth/404', element: <Error /> },
-      { path: '/auth/maintenance', element: <Maintenance /> },
-      { path: '/landingpage', element: <Landingpage /> },
-      { path: '/frontend-pages/homepage', element: <Homepage /> },
-      { path: '/frontend-pages/about', element: <About /> },
-      { path: '/frontend-pages/contact', element: <Contact /> },
-      { path: '/frontend-pages/portfolio', element: <Portfolio /> },
-      { path: '/frontend-pages/pricing', element: <PagePricing /> },
-      { path: '/frontend-pages/blog', element: <BlogPage /> },
-      { path: '/frontend-pages/blog/detail/:id', element: <BlogPost /> },
+      {
+        path: '/',
+        element: <BlankLayout />,
+        children: [
+          { path: '/', element: <Navigate to="/auth/login" replace /> },
+          { path: '/auth/login', element: <Login /> },
+          { path: '/auth/register', element: <Register /> },
+          { path: '/auth/login2', element: <Login2 /> },
+          { path: '/auth/forgot-password', element: <ForgotPassword /> },
+          { path: '/auth/forgot-password2', element: <ForgotPassword2 /> },
+          { path: '/auth/two-steps', element: <TwoSteps /> },
+          { path: '/auth/two-steps2', element: <TwoSteps2 /> },
+          { path: '/auth/reset-code', element: <ResetCode /> },
+          { path: '/auth/404', element: <Error /> },
+          { path: '/auth/maintenance', element: <Maintenance /> },
+          { path: '/landingpage', element: <Landingpage /> },
+          { path: '/frontend-pages/homepage', element: <Homepage /> },
+          { path: '/frontend-pages/about', element: <About /> },
+          { path: '/frontend-pages/contact', element: <Contact /> },
+          { path: '/frontend-pages/portfolio', element: <Portfolio /> },
+          { path: '/frontend-pages/pricing', element: <PagePricing /> },
+          { path: '/frontend-pages/blog', element: <BlogPage /> },
+          { path: '/frontend-pages/blog/detail/:id', element: <BlogPost /> },
+        ],
+      },
+      {
+        path: '/dashboards',
+        element: (
+          <AuthGuard>
+            <FullLayout />
+          </AuthGuard>
+        ),
+        children: [
+          { path: 'modern', element: <ModernDash /> },
+          { path: 'ecommerce', element: <EcommerceDash /> },
+          { path: 'apps/chats', element: <Chats /> },
+          { path: 'apps/notes', element: <Notes /> },
+          { path: 'apps/calendar', element: <Calendar /> },
+          { path: 'apps/email', element: <Email /> },
+          { path: 'apps/tickets', element: <Tickets /> },
+          { path: 'apps/contacts', element: <Contacts /> },
+          { path: 'pages/account-settings', element: <AccountSetting /> },
+        ],
+      },
+      {
+        path: '*',
+        element: <Navigate to="/auth/404" replace />,
+      },
     ],
   },
-  {
-    path: '/dashboards',
-    element: (
-      <AuthGuard>
-        <FullLayout />
-      </AuthGuard>
-    ),
-    children: [
-      { path: 'modern', element: <ModernDash /> },
-      { path: 'ecommerce', element: <EcommerceDash /> },
-      { path: 'apps/chats', element: <Chats /> },
-      { path: 'apps/notes', element: <Notes /> },
-      { path: 'apps/calendar', element: <Calendar /> },
-      { path: 'apps/email', element: <Email /> },
-      { path: 'apps/tickets', element: <Tickets /> },
-      { path: 'apps/contacts', element: <Contacts /> },
-      { path: 'pages/account-settings', element: <AccountSetting /> },
-    ],
-  },
-  {
-    path: '*',
-    element: <Navigate to="/auth/404" replace />,
-  },
-];
+]);
 
-const router = createBrowserRouter(Router);
-
-export default router;
+export default Router;

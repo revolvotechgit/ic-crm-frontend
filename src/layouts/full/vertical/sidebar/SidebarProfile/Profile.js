@@ -1,12 +1,14 @@
 import React from 'react';
 import { Box, Avatar, Typography, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import img1 from 'src/assets/images/profile/user-1.jpg';
 import { IconPower } from '@tabler/icons';
 import useAuth from 'src/guards/authGuard/UseAuth';
 import axios from 'axios';
 
 export const Profile = () => {
+  const navigate = useNavigate();
   const customizer = useSelector((state) => state.customizer);
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const hideMenu = lgUp ? customizer.isCollapse && !customizer.isSidebarHover : '';
@@ -29,12 +31,12 @@ export const Profile = () => {
       authLogout();
 
       // Redirect to login
-      window.location.href = '/auth/login';
+      navigate('/auth/login');
     } catch (error) {
       console.error('Logout error:', error);
       // Still logout locally even if server request fails
       authLogout();
-      window.location.href = '/auth/login';
+      navigate('/auth/login');
     }
   };
 
