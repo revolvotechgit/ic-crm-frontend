@@ -39,6 +39,7 @@ const TwoSteps2 = Loadable(lazy(() => import('../views/authentication/auth2/TwoS
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintenance')));
 const ResetCode = Loadable(lazy(() => import('../views/authentication/auth1/ResetCode')));
+const ResetPassword = Loadable(lazy(() => import('../views/authentication/auth1/ResetPassword')));
 
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
@@ -96,6 +97,10 @@ const Router = [
       { path: 'apps/contacts', element: <Contacts /> },
       { path: 'pages/account-settings', element: <AccountSetting /> },
     ],
+  },
+  {
+    path: '/auth/reset-password',
+    element: <ResetPassword />,
   },
   {
     path: '*',

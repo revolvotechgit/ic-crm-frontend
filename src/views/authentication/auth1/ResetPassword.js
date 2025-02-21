@@ -6,9 +6,9 @@ import Typography from '@mui/material/Typography';
 
 import Logo from 'src/layouts/full/shared/logo/Logo';
 import PageContainer from 'src/components/container/PageContainer';
-import AuthResetCode from '../authForms/AuthResetCode';
+import AuthResetPassword from '../authForms/AuthResetPassword';
 
-const ResetCode = () => (
+const ResetPassword = () => (
   <PageContainer title="Reset Password" description="this is Reset Password page">
     <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
       <Grid
@@ -26,16 +26,16 @@ const ResetCode = () => (
             <Logo />
           </Box>
           <Typography variant="h4" fontWeight="700" mb={1}>
-            Enter Reset Code
+            Set New Password
           </Typography>
           <Typography color="textSecondary" mb={4}>
-            Please enter the code sent to your email
+            Please enter your new password
           </Typography>
-          <AuthResetCode />
+          <AuthResetPassword />
         </Card>
       </Grid>
     </Grid>
   </PageContainer>
 );
 
-export default ResetCode;
+export default ResetPassword; 

@@ -1,123 +1,148 @@
-import React, { useState } from 'react';
-import { Box, Typography, Button, Stack, FormHelperText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Button, Stack, Alert, AlertTitle } from '@mui/material';
+import axios from 'axios';
+
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
+import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
+
+const API_URL = 'http://localhost:3000';
 
 const AuthResetCode = () => {
   const [code, setCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    // Get email from session storage
+    const storedEmail = sessionStorage.getItem('resetEmail');
+    if (!storedEmail) {
+      window.location.href = '/auth/forgot-password';
+      return;
+    }
+    setEmail(storedEmail);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError('');
 
-    const email = sessionStorage.getItem('resetEmail');
-    if (!email) {
-      setError('Email not found. Please start the reset process again.');
-      setLoading(false);
-      return;
-    }
+    // Trim any whitespace from the code
+    const cleanCode = code.trim();
+
+    // Debug log
+    console.log('Sending verification request:', {
+      email,
+      code: cleanCode,
+    });
 
     try {
-      // First verify the code
-      const verifyResponse = await fetch('http://localhost:3000/api/auth/verify-reset-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        `${API_URL}/api/auth/verify-reset-code`,
+        {
+          email,
+          code: cleanCode,
         },
-        body: JSON.stringify({ email, code }),
-      });
-
-      const verifyData = await verifyResponse.json();
-
-      if (verifyData.success) {
-        // If code is verified, reset the password
-        const resetResponse = await fetch('http://localhost:3000/api/auth/reset-password', {
-          method: 'POST',
+        {
           headers: {
             'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
-          body: JSON.stringify({ email, code, newPassword }),
-        });
+        },
+      );
 
-        const resetData = await resetResponse.json();
+      // Debug log
+      console.log('Full server response:', response);
 
-        if (resetData.success) {
-          sessionStorage.removeItem('resetEmail');
-          navigate('/auth/login');
-        } else {
-          setError(resetData.message || 'Failed to reset password');
+      if (response.data) {
+        // Store both the token and the code
+        if (response.data.token) {
+          sessionStorage.setItem('resetToken', response.data.token);
+          sessionStorage.setItem('resetCode', cleanCode);
         }
-      } else {
-        setError(verifyData.message || 'Invalid code');
+        window.location.href = '/auth/reset-password';
       }
     } catch (err) {
-      setError('Failed to connect to server');
+      // Detailed error logging
+      console.error('Reset code error details:', {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message,
+      });
+
+      if (err.response?.status === 400) {
+        setError('Invalid or expired code. Please check the code and try again.');
+      } else if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('An error occurred while verifying the code. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack spacing={3}>
+    <>
+      {/* Fixed height container for error messages */}
+      <Box minHeight="60px" mb={3}>
+        {error && (
+          <Alert
+            severity="error"
+            sx={{
+              '& .MuiAlert-message': {
+                width: '100%',
+              },
+            }}
+          >
+            <AlertTitle>Verification Failed</AlertTitle>
+            {error}
+          </Alert>
+        )}
+      </Box>
+
+      <Stack component="form" onSubmit={handleSubmit}>
         <Box>
+          <CustomFormLabel htmlFor="code">Reset Code</CustomFormLabel>
           <CustomTextField
-            fullWidth
             id="code"
+            name="code"
             variant="outlined"
+            fullWidth
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Enter 6-digit code"
-            disabled={loading}
+            placeholder="Enter the code sent to your email"
           />
         </Box>
+
+        <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
+          <Typography
+            component="span"
+            color="textSecondary"
+            variant="h6"
+            fontWeight="400"
+            sx={{ cursor: 'pointer' }}
+            onClick={() => (window.location.href = '/auth/forgot-password')}
+          >
+            Didn't receive the code?
+          </Typography>
+        </Stack>
+
         <Box>
-          <CustomTextField
-            fullWidth
-            id="newPassword"
-            type="password"
-            variant="outlined"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Enter new password"
-            disabled={loading}
-          />
-        </Box>
-        {error && (
-          <FormHelperText error>{error}</FormHelperText>
-        )}
-        <Button
-          color="primary"
-          variant="contained"
-          size="large"
-          fullWidth
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? 'Resetting...' : 'Reset Password'}
-        </Button>
-        <Typography
-          color="textSecondary"
-          variant="subtitle2"
-          textAlign="center"
-          mt={2}
-        >
-          Didn't receive the code?{' '}
           <Button
             color="primary"
-            onClick={() => navigate('/auth/forgot-password')}
-            sx={{ textTransform: 'none' }}
+            variant="contained"
+            size="large"
+            fullWidth
+            type="submit"
+            disabled={loading || !code.trim()}
           >
-            Resend
+            {loading ? 'Verifying...' : 'Verify Code'}
           </Button>
-        </Typography>
+        </Box>
       </Stack>
-    </form>
+    </>
   );
 };
 

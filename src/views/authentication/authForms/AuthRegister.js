@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Stack, Alert, AlertTitle, Divider } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
@@ -8,99 +8,69 @@ import CustomFormLabel from '../../../components/forms/theme-elements/CustomForm
 // import AuthSocialButtons from './AuthSocialButtons';  // Commented out social buttons
 import useAuth from '../../../guards/authGuard/UseAuth';
 
-const API = 'http://localhost:3000';
+const API_URL = 'http://localhost:3000';
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
-  const navigate = useNavigate();
   const { login } = useAuth();
-  const [register, setRegister] = useState({
-    username: '',
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
+    firstName: '',
+    lastName: '',
     role: 'agent',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const [registerStatus, setRegisterStatus] = useState({
-    success: false,
-    error: false,
-    message: '',
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-  const handleInput = (event) => {
-    setRegister({ ...register, [event.target.name]: event.target.value });
-    // Clear any previous status when user starts typing
-    setRegisterStatus({ success: false, error: false, message: '' });
-  };
-
-  const validateForm = () => {
-    const errors = [];
-
-    if (!register.username || register.username.length < 3) {
-      errors.push('Username must be at least 3 characters');
-    }
-
-    if (!register.email || !register.email.includes('@')) {
-      errors.push('Please enter a valid email address');
-    }
-
-    if (!register.password || register.password.length < 6) {
-      errors.push('Password must be at least 6 characters');
-    }
-
-    if (errors.length > 0) {
-      setRegisterStatus({
-        success: false,
-        error: true,
-        message: errors.join('. '),
-      });
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    console.log('Sending registration data:', formData);
 
     try {
-      const response = await axios.post(`${API}/api/register`, register);
-      console.log(response.data);
+      const response = await axios.post(`${API_URL}/api/auth/register`, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      console.log('Registration response:', response.data);
 
-      // Login the user after successful registration
-      if (response.data.token) {
-        login(response.data.token);
+      if (response.data) {
+        if (response.data.token) {
+          login(response.data.token);
+          window.location.href = '/dashboards/modern';
+        } else {
+          window.location.href = '/auth/login';
+        }
       }
+    } catch (err) {
+      console.error('Registration error:', err.response || err);
 
-      setRegisterStatus({
-        success: true,
-        error: false,
-        message: 'Registration successful! Redirecting...',
-      });
-
-      setTimeout(() => {
-        navigate('/dashboards/modern', { replace: true });
-      }, 1500);
-    } catch (error) {
-      console.error('Registration error:', error);
-      setRegisterStatus({
-        success: false,
-        error: true,
-        message: error.response?.data?.message || 'Registration failed. Please try again.',
-      });
+      // Handle specific error cases
+      if (err.response?.status === 409) {
+        setError(
+          'This email address is already registered. Please use a different email or try logging in.',
+        );
+      } else if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('An error occurred during registration. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {title ? (
-        <Typography fontWeight="700" variant="h3" mb={1}>
+      {title && (
+        <Typography fontWeight="700" variant="h2" mb={1}>
           {title}
         </Typography>
-      ) : null}
+      )}
 
       {subtext}
 
@@ -114,37 +84,46 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         </Divider>
       </Box> */}
 
-      <Stack spacing={2} mb={3}>
-        {registerStatus.error && (
-          <Alert severity="error">
+      {/* Fixed height container for error messages */}
+      <Box minHeight="60px" mb={3}>
+        {' '}
+        {/* Adjust height as needed */}
+        {error && (
+          <Alert
+            severity="error"
+            sx={{
+              '& .MuiAlert-message': {
+                width: '100%',
+              },
+            }}
+          >
             <AlertTitle>Registration failed</AlertTitle>
-            {registerStatus.message}
+            {error}
           </Alert>
         )}
-        {registerStatus.success && (
-          <Alert severity="success">
-            <AlertTitle>Success</AlertTitle>
-            {registerStatus.message}
-          </Alert>
-        )}
-        {!registerStatus.error && !registerStatus.success && (
-          <Alert severity="info">
-            <AlertTitle>Welcome</AlertTitle>
-            Please fill in your information to create an account
-          </Alert>
-        )}
-      </Stack>
+      </Box>
 
       <Stack component="form" onSubmit={handleSubmit}>
         <Box>
-          <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
+          <CustomFormLabel htmlFor="firstName">First Name</CustomFormLabel>
           <CustomTextField
-            id="username"
-            name="username"
+            id="firstName"
+            name="firstName"
             variant="outlined"
             fullWidth
-            value={register.username}
-            onChange={handleInput}
+            value={formData.firstName}
+            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+          />
+        </Box>
+        <Box>
+          <CustomFormLabel htmlFor="lastName">Last Name</CustomFormLabel>
+          <CustomTextField
+            id="lastName"
+            name="lastName"
+            variant="outlined"
+            fullWidth
+            value={formData.lastName}
+            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
           />
         </Box>
         <Box>
@@ -155,8 +134,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             type="email"
             variant="outlined"
             fullWidth
-            value={register.email}
-            onChange={handleInput}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
         </Box>
         <Box>
@@ -167,8 +146,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             type="password"
             variant="outlined"
             fullWidth
-            value={register.password}
-            onChange={handleInput}
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           />
         </Box>
         <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}></Stack>
@@ -179,9 +158,9 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             size="large"
             fullWidth
             type="submit"
-            disabled={registerStatus.success}
+            disabled={loading}
           >
-            Sign Up
+            {loading ? 'Registering...' : 'Sign Up'}
           </Button>
         </Box>
       </Stack>
