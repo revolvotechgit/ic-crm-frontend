@@ -1,6 +1,6 @@
 import { styled, Container, Box, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import Header from './vertical/header/Header';
 import HorizontalHeader from '../full/horizontal/header/Header';
 import Sidebar from './vertical/sidebar/Sidebar';
@@ -8,6 +8,7 @@ import Customizer from './shared/customizer/Customizer';
 import Navigation from './horizontal/navbar/Navbar';
 import ScrollToTop from '../../components/shared/ScrollToTop';
 import LoadingBar from '../../LoadingBar';
+
 
 const MainWrapper = styled('div')(() => ({
   display: 'flex',
@@ -81,6 +82,7 @@ const FullLayout = () => {
         </PageWrapper>
       </MainWrapper>
     </>
+
   );
 };
 

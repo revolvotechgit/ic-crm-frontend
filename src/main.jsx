@@ -6,17 +6,18 @@ import { store } from './store/Store';
 import Spinner from './views/spinner/Spinner';
 import './_mockApis';
 import './utils/i18n';
+import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './guards/jwt/JwtContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <AuthProvider>
+  <Provider store={store}>
+    <AuthProvider>
+      <BrowserRouter>
         <Suspense fallback={<Spinner />}>
           <App />
         </Suspense>
-      </AuthProvider>
-    </Provider>
-  </React.StrictMode>,
+      </BrowserRouter>
+    </AuthProvider>
+  </Provider>,
 );
