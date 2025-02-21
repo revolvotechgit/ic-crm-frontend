@@ -12,7 +12,6 @@ const ResetPassword = () => (
   <PageContainer title="Reset Password" description="this is Reset Password page">
     <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
       <Grid
-        item
         xs={12}
         sm={12}
         lg={4}

@@ -18,12 +18,26 @@ const AuthResetPassword = () => {
   const [code, setCode] = useState('');
 
   useEffect(() => {
+    // Check for both email and token
     const storedEmail = sessionStorage.getItem('resetEmail');
-    const storedCode = sessionStorage.getItem('resetCode');
-    if (!storedEmail || !storedCode) {
+    const resetToken = sessionStorage.getItem('resetToken');
+    
+    console.log('Stored data:', { storedEmail, resetToken }); // Debug log
+
+    if (!storedEmail || !resetToken) {
+      console.log('Missing required data, redirecting...'); // Debug log
       window.location.href = '/auth/forgot-password';
       return;
     }
+
+    // Get the code only if we have valid email and token
+    const storedCode = sessionStorage.getItem('resetCode');
+    if (!storedCode) {
+      console.log('Missing reset code, redirecting...'); // Debug log
+      window.location.href = '/auth/reset-code';
+      return;
+    }
+
     setEmail(storedEmail);
     setCode(storedCode);
   }, []);

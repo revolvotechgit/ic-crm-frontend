@@ -14,7 +14,6 @@ const AuthResetCode = () => {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    // Get email from session storage
     const storedEmail = sessionStorage.getItem('resetEmail');
     if (!storedEmail) {
       window.location.href = '/auth/forgot-password';
@@ -28,16 +27,14 @@ const AuthResetCode = () => {
     setLoading(true);
     setError('');
 
-    // Trim any whitespace from the code
     const cleanCode = code.trim();
 
-    // Debug log
-    console.log('Sending verification request:', {
-      email,
-      code: cleanCode,
-    });
-
     try {
+      console.log('Sending request:', {
+        url: `${API_URL}/api/auth/verify-reset-code`,
+        data: { email, code: cleanCode },
+      });
+
       const response = await axios.post(
         `${API_URL}/api/auth/verify-reset-code`,
         {
@@ -52,24 +49,31 @@ const AuthResetCode = () => {
         },
       );
 
-      // Debug log
-      console.log('Full server response:', response);
+      console.log('Full response:', response); // Log the full response
 
-      if (response.data) {
-        // Store both the token and the code
-        if (response.data.token) {
-          sessionStorage.setItem('resetToken', response.data.token);
-          sessionStorage.setItem('resetCode', cleanCode);
-        }
-        window.location.href = '/auth/reset-password';
+      if (response.data && response.data.success) {
+        // Store all necessary data
+        const token = response.data.token || 'temporary-token';
+        sessionStorage.setItem('resetToken', token);
+        sessionStorage.setItem('resetCode', cleanCode);
+
+        // Verify storage before redirect
+        const verifyStorage = {
+          token: sessionStorage.getItem('resetToken'),
+          code: sessionStorage.getItem('resetCode'),
+          email: sessionStorage.getItem('resetEmail'),
+        };
+        console.log('Verification before redirect:', verifyStorage);
+
+        // Add a small delay before redirect
+        setTimeout(() => {
+          window.location.href = '/auth/reset-password';
+        }, 100);
+      } else {
+        setError('Invalid response from server');
       }
     } catch (err) {
-      // Detailed error logging
-      console.error('Reset code error details:', {
-        status: err.response?.status,
-        data: err.response?.data,
-        message: err.message,
-      });
+      console.error('Reset code error:', err.response || err);
 
       if (err.response?.status === 400) {
         setError('Invalid or expired code. Please check the code and try again.');
@@ -85,7 +89,6 @@ const AuthResetCode = () => {
 
   return (
     <>
-      {/* Fixed height container for error messages */}
       <Box minHeight="60px" mb={3}>
         {error && (
           <Alert

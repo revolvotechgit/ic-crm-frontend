@@ -67,6 +67,7 @@ const Router = [
       { path: '/auth/two-steps', element: <TwoSteps /> },
       { path: '/auth/two-steps2', element: <TwoSteps2 /> },
       { path: '/auth/reset-code', element: <ResetCode /> },
+      { path: '/auth/reset-password', element: <ResetPassword /> },
       { path: '/auth/404', element: <Error /> },
       { path: '/auth/maintenance', element: <Maintenance /> },
       { path: '/landingpage', element: <Landingpage /> },
@@ -97,10 +98,6 @@ const Router = [
       { path: 'apps/contacts', element: <Contacts /> },
       { path: 'pages/account-settings', element: <AccountSetting /> },
     ],
-  },
-  {
-    path: '/auth/reset-password',
-    element: <ResetPassword />,
   },
   {
     path: '*',
