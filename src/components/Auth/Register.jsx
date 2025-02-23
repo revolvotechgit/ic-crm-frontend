@@ -20,6 +20,9 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:3000/api";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +31,7 @@ const Register = () => {
     lastName: "",
     email: "",
     password: "",
+    role: "agent",
   });
 
   const handleChange = (e) => {
@@ -39,6 +43,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     console.log("Register data:", formData);
   };
 

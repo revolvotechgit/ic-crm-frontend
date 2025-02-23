@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState } from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Power, MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
 import { Box } from "@mui/material";
@@ -10,12 +10,18 @@ export default function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
   const { logout, user } = useAuth();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setUserData(user);
+  }, []);
 
   return (
     <aside className={`h-screen ${expanded ? "w-70" : "w-20"} transition-all`}>
@@ -77,7 +83,7 @@ export default function Sidebar({ children }) {
           className="flex"
         >
           <img
-            src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&color=ff0000`}
+            src={`https://ui-avatars.com/api/?name=${userData?.firstName}+${userData?.lastName}&color=ff0000`}
             alt=""
             className="w-10 h-10 rounded-md"
           />
@@ -88,9 +94,9 @@ export default function Sidebar({ children }) {
           >
             <div className="leading-4">
               <h4 className="font-semibold">
-                {user?.firstName} {user?.lastName}
+                {userData?.firstName} {userData?.lastName}
               </h4>
-              <span className="text-xs opacity-80">{user?.email}</span>
+              <span className="text-xs opacity-80">{userData?.email}</span>
             </div>
             <Power
               className="hover:cursor-pointer hover:opacity-80"

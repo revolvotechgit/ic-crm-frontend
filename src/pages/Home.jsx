@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -26,6 +26,11 @@ import {
 
 function Home() {
   // Example data for statistics
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setUserData(user);
+  }, []);
   const stats = [
     {
       title: "Total Users",
@@ -95,7 +100,7 @@ function Home() {
             Dashboard Overview
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            Welcome back, John Doe
+            Welcome back, {userData?.firstName} {userData?.lastName}
           </Typography>
         </Box>
 
