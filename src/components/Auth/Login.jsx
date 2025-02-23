@@ -9,6 +9,7 @@ import {
   IconButton,
   Alert,
   AlertTitle,
+  Collapse,
 } from "@mui/material";
 import { Mail, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,7 +21,12 @@ axios.defaults.baseURL = "http://localhost:3000/api";
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: "info",
+    title: "",
+    message: "",
+  });
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -29,40 +35,67 @@ const Login = () => {
   const { login } = useAuth();
 
   const handleChange = (e) => {
-    setError(null);
+    // Clear alerts when user starts typing
+    if (alert.show) {
+      setAlert({ ...alert, show: false });
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
+  const showAlert = (severity, title, message) => {
+    setAlert({
+      show: true,
+      severity,
+      title,
+      message,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
+    setAlert({ ...alert, show: false });
 
     try {
+      // Validate inputs
       if (!formData.email || !formData.password) {
-        throw new Error("Email and password are required");
+        showAlert(
+          "error",
+          "Validation Error",
+          "Email and password are required"
+        );
+        return;
       }
 
       const response = await axios.post("/auth/login", formData);
 
       if (response.data.success) {
+        showAlert("success", "Success", "Login successful! Redirecting...");
         login({
           ...response.data.user,
           token: response.data.token,
         });
-        navigate("/");
+
+        // Delay navigation to show success message
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
       } else {
-        setError(response.data.message || "Login failed");
+        showAlert(
+          "error",
+          "Login Failed",
+          response.data.message || "An error occurred"
+        );
       }
     } catch (error) {
-      setError(
+      const errorMessage =
         error.response?.data?.message ||
-          error.message ||
-          "An error occurred during login"
-      );
+        error.message ||
+        "An error occurred during login";
+      showAlert("error", "Login Failed", errorMessage);
     } finally {
       setLoading(false);
     }
@@ -85,12 +118,16 @@ const Login = () => {
         </Typography>
       </Box>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          <AlertTitle>Error</AlertTitle>
-          {error}
+      <Collapse in={alert.show}>
+        <Alert
+          severity={alert.severity}
+          sx={{ mb: 2 }}
+          onClose={() => setAlert({ ...alert, show: false })}
+        >
+          <AlertTitle>{alert.title}</AlertTitle>
+          {alert.message}
         </Alert>
-      )}
+      </Collapse>
 
       <form onSubmit={handleSubmit}>
         <TextField
@@ -103,7 +140,7 @@ const Login = () => {
           onChange={handleChange}
           margin="normal"
           required
-          error={!!error && !formData.email}
+          error={alert.show && alert.severity === "error" && !formData.email}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -140,7 +177,7 @@ const Login = () => {
           onChange={handleChange}
           margin="normal"
           required
-          error={!!error && !formData.password}
+          error={alert.show && alert.severity === "error" && !formData.password}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
