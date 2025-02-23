@@ -32,6 +32,7 @@ import Register from "./components/Auth/Register";
 import ResetCode from "./components/Auth/ResetCode";
 import ResetPassword from "./components/Auth/ResetPassword";
 import ProtectedRoutes from "./utils/ProtectectedRoutes";
+import { AuthProvider } from "./context/AuthContext";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -102,32 +103,34 @@ function App() {
   );
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <Router>
-          <Box
-            sx={{
-              position: "fixed",
-              top: 16,
-              right: 16,
-              zIndex: 1200,
-              bgcolor: "background.paper",
-              borderRadius: 1,
-              boxShadow: 1,
-              p: 0.5,
-            }}
-          >
-            <IconButton
-              onClick={colorMode.toggleColorMode}
-              sx={{ color: "text.primary" }}
+    <AuthProvider>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <Router>
+            <Box
+              sx={{
+                position: "fixed",
+                top: 16,
+                right: 16,
+                zIndex: 1200,
+                bgcolor: "background.paper",
+                borderRadius: 1,
+                boxShadow: 1,
+                p: 0.5,
+              }}
             >
-              {mode === "dark" ? <LightMode /> : <DarkMode />}
-            </IconButton>
-          </Box>
-          <AppContent />
-        </Router>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+              <IconButton
+                onClick={colorMode.toggleColorMode}
+                sx={{ color: "text.primary" }}
+              >
+                {mode === "dark" ? <LightMode /> : <DarkMode />}
+              </IconButton>
+            </Box>
+            <AppContent />
+          </Router>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </AuthProvider>
   );
 }
 

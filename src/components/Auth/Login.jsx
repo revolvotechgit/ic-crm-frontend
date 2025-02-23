@@ -12,26 +12,60 @@ import {
 } from "@mui/material";
 import { Mail, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:3000/api";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const { login } = useAuth();
 
   const handleChange = (e) => {
+    setError(null);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login data:", formData);
-    navigate("/");
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (!formData.email || !formData.password) {
+        throw new Error("Email and password are required");
+      }
+
+      const response = await axios.post("/auth/login", formData);
+
+      if (response.data.success) {
+        login({
+          ...response.data.user,
+          token: response.data.token,
+        });
+        navigate("/");
+      } else {
+        setError(response.data.message || "Login failed");
+      }
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "An error occurred during login"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,10 +84,14 @@ const Login = () => {
           Please sign in to continue
         </Typography>
       </Box>
-      <Alert severity="success">
-        <AlertTitle>Success</AlertTitle>
-        This is a success Alert with an encouraging title.
-      </Alert>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
+
       <form onSubmit={handleSubmit}>
         <TextField
           fullWidth
@@ -64,6 +102,8 @@ const Login = () => {
           value={formData.email}
           onChange={handleChange}
           margin="normal"
+          required
+          error={!!error && !formData.email}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -99,6 +139,8 @@ const Login = () => {
           value={formData.password}
           onChange={handleChange}
           margin="normal"
+          required
+          error={!!error && !formData.password}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -124,8 +166,9 @@ const Login = () => {
           variant="contained"
           size="large"
           sx={{ mt: 3 }}
+          disabled={loading}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </Button>
 
         <Box sx={{ mt: 3, textAlign: "center" }}>
