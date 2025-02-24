@@ -11,6 +11,7 @@ import {
   Grid,
   Alert,
   AlertTitle,
+  Collapse,
 } from "@mui/material";
 import {
   Mail,
@@ -19,32 +20,91 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:3000/api";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: "info",
+    title: "",
+    message: "",
+  });
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    role: "agent",
+    role: "admin",
   });
 
   const handleChange = (e) => {
+    if (alert.show) {
+      setAlert({ ...alert, show: false });
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const showAlert = (severity, title, message) => {
+    setAlert({
+      show: true,
+      severity,
+      title,
+      message,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log("Register data:", formData);
+    setLoading(true);
+    setAlert({ ...alert, show: false });
+
+    try {
+      // Validate inputs
+      if (
+        !formData.email ||
+        !formData.password ||
+        !formData.firstName ||
+        !formData.lastName
+      ) {
+        showAlert("error", "Validation Error", "All fields are required");
+        return;
+      }
+
+      const response = await axios.post("/auth/register", formData);
+
+      if (response.data.success) {
+        showAlert(
+          "success",
+          "Success",
+          "Registration successful! Redirecting to login..."
+        );
+
+        // Delay navigation to show success message
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An error occurred during registration";
+      showAlert("error", "Registration Failed", errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,10 +133,18 @@ const Register = () => {
               Get started with your free account
             </Typography>
           </Box>
-          <Alert severity="success" sx={{ mb: 3 }}>
-            <AlertTitle>Success</AlertTitle>
-            This is a success Alert with an encouraging title.
-          </Alert>
+
+          <Collapse in={alert.show}>
+            <Alert
+              severity={alert.severity}
+              sx={{ mb: 2 }}
+              onClose={() => setAlert({ ...alert, show: false })}
+            >
+              <AlertTitle>{alert.title}</AlertTitle>
+              {alert.message}
+            </Alert>
+          </Collapse>
+
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -87,25 +155,18 @@ const Register = () => {
                   placeholder="First name"
                   value={formData.firstName}
                   onChange={handleChange}
+                  required
+                  error={
+                    alert.show &&
+                    alert.severity === "error" &&
+                    !formData.firstName
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
                         <Person sx={{ color: "text.secondary" }} />
                       </InputAdornment>
                     ),
-                  }}
-                  sx={{
-                    "& .MuiInputLabel-root": {
-                      color: "text.secondary",
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "divider",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "primary.main",
-                      },
-                    },
                   }}
                 />
               </Grid>
@@ -117,6 +178,12 @@ const Register = () => {
                   placeholder="Last name"
                   value={formData.lastName}
                   onChange={handleChange}
+                  required
+                  error={
+                    alert.show &&
+                    alert.severity === "error" &&
+                    !formData.lastName
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -137,6 +204,10 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               margin="normal"
+              required
+              error={
+                alert.show && alert.severity === "error" && !formData.email
+              }
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -155,6 +226,10 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               margin="normal"
+              required
+              error={
+                alert.show && alert.severity === "error" && !formData.password
+              }
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -180,8 +255,9 @@ const Register = () => {
               variant="contained"
               size="large"
               sx={{ mt: 3 }}
+              disabled={loading}
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
 
             <Box sx={{ mt: 3, textAlign: "center" }}>
