@@ -31,7 +31,7 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import ResetCode from "./components/Auth/ResetCode";
 import ResetPassword from "./components/Auth/ResetPassword";
-import ProtectedRoutes from "./utils/ProtectectedRoutes";
+import { ProtectedRoutes, AuthRoutes } from "./utils/ProtectectedRoutes";
 import { AuthProvider } from "./context/AuthContext";
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
@@ -51,11 +51,13 @@ const AppContent = () => {
     return (
       <AuthLayout>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/reset-code" element={<ResetCode />} />
+          <Route element={<AuthRoutes />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/reset-code" element={<ResetCode />} />
+          </Route>
         </Routes>
       </AuthLayout>
     );
@@ -71,13 +73,17 @@ const AppContent = () => {
         <SidebarItem icon={<BarChart3 />} text="Analytics" to="/analytics" />
         <SidebarItem icon={<Settings />} text="Settings" to="/settings" />
         <SidebarItem icon={<HelpCircle />} text="Help" to="/help" />
-        <SidebarItem icon={<LogIn />} text="Login" to="/login" />
-        <SidebarItem icon={<UserPlus />} text="Register" to="/register" />
       </Sidebar>
       <main className="flex-1 p-4">
         <Routes>
           <Route element={<ProtectedRoutes />}>
             <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<div>Projects Page</div>} />
+            <Route path="/invoices" element={<div>Invoices Page</div>} />
+            <Route path="/team" element={<div>Team Page</div>} />
+            <Route path="/analytics" element={<div>Analytics Page</div>} />
+            <Route path="/settings" element={<div>Settings Page</div>} />
+            <Route path="/help" element={<div>Help Page</div>} />
           </Route>
         </Routes>
       </main>
