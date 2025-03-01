@@ -14,7 +14,7 @@ import { Mail } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:3000/api";
+axios.defaults.baseURL = "https://ic-crm-backend.onrender.com";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
