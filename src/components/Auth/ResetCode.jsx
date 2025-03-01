@@ -12,7 +12,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://ic-crm-backend.onrender.com";
+axios.defaults.baseURL = "https://ic-crm-backend.onrender.com/api";
 
 const ResetCode = () => {
   const location = useLocation();

@@ -15,7 +15,7 @@ import { Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://ic-crm-backend.onrender.com";
+axios.defaults.baseURL = "https://ic-crm-backend.onrender.com/api";
 
 const ResetPassword = () => {
   const navigate = useNavigate();

@@ -16,7 +16,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://ic-crm-backend.onrender.com";
+axios.defaults.baseURL = "https://ic-crm-backend.onrender.com/api";
 
 const Login = () => {
   const navigate = useNavigate();
