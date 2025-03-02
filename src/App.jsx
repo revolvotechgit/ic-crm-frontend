@@ -15,6 +15,7 @@ import AuthLayout from "./components/Layout/AuthLayout";
 import Sidebar from "./components/Dashboard/Sidebar";
 import { SidebarItem } from "./components/Dashboard/Sidebar";
 import ForgotPassword from "./components/Auth/ForgotPassword";
+import NotFound from "./components/NotFound";
 import {
   HomeIcon,
   LogIn,
@@ -46,6 +47,27 @@ const AppContent = () => {
     "/reset-password",
     "/reset-code",
   ].includes(location.pathname);
+
+  // Check if the current path matches any of our defined routes
+  const isKnownRoute = [
+    "/",
+    "/projects",
+    "/invoices",
+    "/team",
+    "/analytics",
+    "/settings",
+    "/help",
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+    "/reset-code",
+  ].includes(location.pathname);
+
+  // If it's not a known route, show the 404 page without any layout
+  if (!isKnownRoute) {
+    return <NotFound />;
+  }
 
   if (isAuthPage) {
     return (
