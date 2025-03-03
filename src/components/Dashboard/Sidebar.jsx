@@ -1,9 +1,9 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Power, MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
-
+import logo from "../../assets/Logo.svg";
 const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
@@ -12,6 +12,7 @@ export default function Sidebar({ children }) {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const { logout, user } = useAuth();
+  const theme = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -36,11 +37,18 @@ export default function Sidebar({ children }) {
       >
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
-            src="https://img.logoipsum.com/243.svg"
+            src={logo}
+            style={{
+              filter: `brightness(0) saturate(100%) ${
+                theme.palette.mode === "dark"
+                  ? `invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)`
+                  : `invert(24%) sepia(90%) saturate(6619%) hue-rotate(242deg) brightness(97%) contrast(91%)`
+              }`,
+            }}
             className={`overflow-hidden transition-all ${
               expanded ? "w-32" : "w-0"
             }`}
-            alt=""
+            alt="Company Logo"
           />
           <Box
             component="button"

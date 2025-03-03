@@ -1,14 +1,19 @@
 import React from "react";
-import { Box, Container } from "@mui/material";
+import { Box, Container, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
+import logo from "../../assets/Logo.svg";
 
 const AuthLayout = ({ children }) => {
+  const theme = useTheme();
+
   return (
-    <Box sx={{ 
-      minHeight: "100vh", 
-      position: "relative",
-      bgcolor: 'background.default'
-    }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        position: "relative",
+        bgcolor: "background.default",
+      }}
+    >
       {/* Logo in the corner */}
       <Box
         sx={{
@@ -20,9 +25,17 @@ const AuthLayout = ({ children }) => {
       >
         <Link to="/">
           <img
-            src="https://img.logoipsum.com/243.svg"
-            alt="Logo"
-            style={{ width: "100%", height: "auto" }}
+            src={logo}
+            style={{
+              filter: `brightness(0) saturate(100%) ${
+                theme.palette.mode === "dark"
+                  ? `invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)`
+                  : `invert(24%) sepia(90%) saturate(6619%) hue-rotate(242deg) brightness(97%) contrast(91%)`
+              }`,
+              width: "100%",
+              height: "auto",
+            }}
+            alt="Company Logo"
           />
         </Link>
       </Box>
@@ -45,4 +58,4 @@ const AuthLayout = ({ children }) => {
   );
 };
 
-export default AuthLayout; 
+export default AuthLayout;
