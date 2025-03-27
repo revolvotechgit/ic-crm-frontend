@@ -34,7 +34,7 @@ import ResetCode from "./components/Auth/ResetCode";
 import ResetPassword from "./components/Auth/ResetPassword";
 import { ProtectedRoutes, AuthRoutes } from "./utils/ProtectectedRoutes";
 import { AuthProvider } from "./context/AuthContext";
-
+import Project from "./components/Project/Project";
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 // Wrapper component to handle layout selection
@@ -100,7 +100,7 @@ const AppContent = () => {
         <Routes>
           <Route element={<ProtectedRoutes />}>
             <Route path="/" element={<Home />} />
-            <Route path="/projects" element={<div>Projects Page</div>} />
+            <Route path="/projects" element={<Project />} />
             <Route path="/invoices" element={<div>Invoices Page</div>} />
             <Route path="/team" element={<div>Team Page</div>} />
             <Route path="/analytics" element={<div>Analytics Page</div>} />
