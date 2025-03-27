@@ -44,6 +44,23 @@ const lightTheme = {
         },
       },
     },
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "grey.100",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: "background.paper",
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: "grey.100",
+            borderTop: "1px solid",
+            borderColor: "divider",
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -111,6 +128,23 @@ const darkTheme = {
         },
       },
     },
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "grey.800",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: "background.paper",
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: "grey.800",
+            borderTop: "1px solid",
+            borderColor: "divider",
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -147,6 +181,27 @@ const commonStyles = {
           transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
           "&:hover": {
             transform: "translateY(-4px)",
+          },
+        },
+      },
+    },
+    MuiDataGrid: {
+      styleOverrides: {
+        root: {
+          border: "none",
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "inherit",
+            backgroundImage: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            "&:focus": {
+              outline: "none",
+            },
+          },
+          "& .MuiDataGrid-row": {
+            "&:hover": {
+              backgroundColor: "action.hover",
+            },
           },
         },
       },
