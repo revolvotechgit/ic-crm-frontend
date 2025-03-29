@@ -25,15 +25,18 @@ import {
   Chip,
   Stack,
   useTheme,
+  Paper,
 } from "@mui/material";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const ProjectDetails = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const projectData = location.state?.project;
@@ -208,38 +211,62 @@ const ProjectDetails = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ ml: 4 }}>
+    <Container maxWidth="xl">
       <Box sx={{ py: 4 }}>
-        <Box
+        {/* Header Section with Back Button */}
+        <Paper
+          elevation={0}
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "left",
-            flexDirection: "column",
-            mb: 4,
+            p: 3,
+            mb: 3,
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? "transparent"
+                : theme.palette.grey[100],
+            borderRadius: 2,
           }}
         >
-          <Typography variant="h4" color="text.primary" gutterBottom>
-            {project.projectName}
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            Client: {project.clientName}
-          </Typography>
-          <Chip
-            label={project.status}
-            sx={{
-              backgroundColor:
-                statusColors[project.status] || theme.palette.grey[300],
-              color: theme.palette.getContrastText(
-                statusColors[project.status] || theme.palette.grey[300]
-              ),
-              fontWeight: 500,
-              width: "120px",
-              height: "32px",
-              fontSize: "0.875rem",
-            }}
-          />
-        </Box>
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+            <IconButton
+              onClick={() => navigate("/projects")}
+              sx={{
+                p: 1,
+                color: theme.palette.text.secondary,
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                  color: theme.palette.primary.main,
+                },
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h4" color="text.primary">
+              {project.projectName}
+            </Typography>
+          </Stack>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item>
+              <Typography variant="subtitle1" color="text.secondary">
+                Client: {project.clientName}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Chip
+                label={project.status}
+                sx={{
+                  backgroundColor:
+                    statusColors[project.status] || theme.palette.grey[300],
+                  color: theme.palette.getContrastText(
+                    statusColors[project.status] || theme.palette.grey[300]
+                  ),
+                  fontWeight: 500,
+                  height: "32px",
+                  fontSize: "0.875rem",
+                }}
+              />
+            </Grid>
+          </Grid>
+        </Paper>
 
         <Grid container spacing={4}>
           {/* Tasks Section */}

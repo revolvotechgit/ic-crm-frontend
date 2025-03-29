@@ -12,8 +12,12 @@ const lightTheme = {
       secondary: "#64748b",
     },
     background: {
-      default: "#f1f5f9",
+      default: "#fafaff",
       paper: "#ffffff",
+      subtle: "#f8f8ff",
+    },
+    action: {
+      hover: "rgba(79, 70, 229, 0.04)",
     },
   },
   typography: {
@@ -105,6 +109,7 @@ const darkTheme = {
     background: {
       default: "#0f172a",
       paper: "#1e293b",
+      transparent: "transparent",
     },
   },
   typography: {
