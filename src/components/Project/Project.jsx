@@ -17,6 +17,9 @@ import {
   InputLabel,
   Select,
   InputAdornment,
+  Card,
+  CardContent,
+  Stack,
 } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -26,7 +29,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const Project = () => {
   const theme = useTheme();
-  const [value, setValue] = useState("one");
+  const [value, setValue] = useState("grid");
   const [openModal, setOpenModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -536,6 +539,82 @@ const Project = () => {
     );
   });
 
+  // Add this new component for the list view
+  const ProjectListView = ({ projects }) => {
+    return (
+      <Stack spacing={2}>
+        {projects.map((project) => (
+          <Card key={project.id} sx={{ width: "100%" }}>
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Typography variant="h6" component="div">
+                    {project.projectName}
+                  </Typography>
+                  <Typography color="text.secondary" gutterBottom>
+                    {project.clientName}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography variant="body2" color="text.secondary">
+                    Type: {projectTypes[project.projectType]?.label}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Location: {project.location}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <Typography variant="body2" color="text.secondary">
+                    Budget: {project.budget}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    ETA: {new Date(project.ETA).toLocaleDateString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <Chip
+                    label={project.status}
+                    sx={{
+                      backgroundColor:
+                        statusColors[project.status] || theme.palette.grey[300],
+                      color: theme.palette.getContrastText(
+                        statusColors[project.status] || theme.palette.grey[300]
+                      ),
+                      fontWeight: 500,
+                      width: "100%",
+                      mb: 1,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={1}>
+                  <Stack direction="column" spacing={1}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() => handleOpenModal("edit", project)}
+                      fullWidth
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleDeleteClick(project)}
+                      fullWidth
+                    >
+                      Delete
+                    </Button>
+                  </Stack>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        ))}
+      </Stack>
+    );
+  };
+
   return (
     <Container maxWidth="xl" sx={{ ml: 4 }}>
       <Box sx={{ py: 4 }}>
@@ -572,10 +651,10 @@ const Project = () => {
           onChange={handleChange}
           textColor="primary"
           indicatorColor="primary"
-          aria-label="secondary tabs example"
+          aria-label="project view tabs"
         >
-          <Tab value="one" label="Board view" />
-          <Tab value="two" label="Tree view" />
+          <Tab value="grid" label="Grid View" />
+          <Tab value="list" label="List View" />
         </Tabs>
         <Box>
           <Button
@@ -618,35 +697,41 @@ const Project = () => {
         />
       </Box>
 
-      <Box
-        sx={{
-          height: 580,
-          width: "100%",
-          mt: 4,
-        }}
-      >
-        <DataGrid
-          rows={filteredProjects}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 10,
-              },
-            },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          checkboxSelection
-          disableRowSelectionOnClick
+      {value === "grid" ? (
+        <Box
           sx={{
-            boxShadow: 2,
-            border: "none",
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: theme.palette.background.primary,
-            },
+            height: 580,
+            width: "100%",
+            mt: 4,
           }}
-        />
-      </Box>
+        >
+          <DataGrid
+            rows={filteredProjects}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            checkboxSelection
+            disableRowSelectionOnClick
+            sx={{
+              boxShadow: 2,
+              border: "none",
+              "& .MuiDataGrid-virtualScroller": {
+                backgroundColor: theme.palette.background.primary,
+              },
+            }}
+          />
+        </Box>
+      ) : (
+        <Box sx={{ mt: 4 }}>
+          <ProjectListView projects={filteredProjects} />
+        </Box>
+      )}
 
       {/* Add/Edit Project Modal */}
       <Dialog
