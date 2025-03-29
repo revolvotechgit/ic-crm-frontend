@@ -13,6 +13,10 @@ import {
   MenuItem,
   Grid,
   DialogContentText,
+  FormControl,
+  InputLabel,
+  Select,
+  InputAdornment,
 } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -29,85 +33,274 @@ const Project = () => {
   const [projects, setProjects] = useState([
     {
       id: 1,
-      projectName: "Website Redesign",
-      createdOn: "2023-10-15",
+      projectName: "Residential Solar Installation - Thompson",
+      clientName: "John Thompson",
+      projectType: "solar",
+      subType: "Panel Installation",
+      propertyType: "Residential - Single Family",
+      createdOn: "2024-01-15",
       ETA: "2024-02-28",
-      budget: "$10,000",
+      budget: "$35,000",
       status: "In Progress",
+      location: "123 Sunshine Ave, Phoenix, AZ",
+      squareFootage: "2200",
+      systemCapacity: "8.5",
+      expectedOutput: "12000",
+      materials: ["Monocrystalline Panels", "Inverter"],
+      notes:
+        "South-facing roof, optimal sun exposure. Customer interested in future battery expansion.",
     },
     {
       id: 2,
-      projectName: "Mobile App Development",
-      createdOn: "2023-11-05",
-      ETA: "2024-05-15",
-      budget: "$15,000",
-      status: "On Hold",
+      projectName: "Commercial Roof Replacement - Office Complex",
+      clientName: "Skyline Properties LLC",
+      projectType: "roofing",
+      subType: "Replacement",
+      propertyType: "Commercial - Office",
+      createdOn: "2024-01-05",
+      ETA: "2024-03-15",
+      budget: "$125,000",
+      status: "Planning",
+      location: "456 Business Park Dr, Houston, TX",
+      squareFootage: "15000",
+      roofPitch: "2:12",
+      materials: ["Flat Roof/EPDM", "Metal"],
+      notes: "Complete tear-off required. Adding additional drainage points.",
     },
     {
       id: 3,
-      projectName: "API Integration",
+      projectName: "Concrete Tile Roofing - Highland Homes",
+      clientName: "Sarah Martinez",
+      projectType: "roofing",
+      subType: "New Installation",
+      propertyType: "Residential - Single Family",
       createdOn: "2023-12-01",
       ETA: "2024-01-20",
       status: "Completed",
-      budget: "$20,000",
+      budget: "$42,000",
+      location: "789 Highland Dr, San Diego, CA",
+      squareFootage: "3200",
+      roofPitch: "6:12",
+      materials: ["Concrete Tiles"],
+      notes: "Mediterranean style home. Custom color tiles ordered.",
     },
     {
       id: 4,
-      projectName: "Database Migration",
-      createdOn: "2023-09-22",
-      ETA: "2023-12-15",
-      status: "Completed",
-      budget: "$25,000",
+      projectName: "Solar Panel Maintenance - Greenview Apartments",
+      clientName: "Greenview Management",
+      projectType: "solar",
+      subType: "Maintenance",
+      propertyType: "Residential - Multi Family",
+      createdOn: "2024-01-22",
+      ETA: "2024-02-05",
+      status: "On Hold",
+      budget: "$8,500",
+      location: "101 Green Ave, Las Vegas, NV",
+      squareFootage: "12000",
+      systemCapacity: "25",
+      expectedOutput: "35000",
+      materials: ["Polycrystalline Panels", "Inverter"],
+      notes: "Annual maintenance and cleaning. Check for storm damage.",
     },
     {
       id: 5,
-      projectName: "UI/UX Overhaul",
+      projectName: "Emergency Roof Repair - Storm Damage",
+      clientName: "David Wilson",
+      projectType: "roofing",
+      subType: "Emergency Repair",
+      propertyType: "Residential - Single Family",
       createdOn: "2024-01-10",
-      ETA: "2024-04-30",
-      status: "In Progress",
-      budget: "$30,000",
+      ETA: "2024-01-12",
+      status: "Completed",
+      budget: "$15,000",
+      location: "202 Storm Dr, Miami, FL",
+      squareFootage: "1800",
+      roofPitch: "5:12",
+      materials: ["Asphalt Shingles"],
+      notes:
+        "Hurricane damage. Insurance claim approved. Temporary repairs completed.",
     },
     {
       id: 6,
-      projectName: "Payment System Upgrade",
+      projectName: "Solar + Battery Installation - Smith Residence",
+      clientName: "Michael Smith",
+      projectType: "solar",
+      subType: "Battery System",
+      propertyType: "Residential - Single Family",
       createdOn: "2023-11-30",
-      ETA: "2024-03-22",
-      status: "Delayed",
-      budget: "$35,000",
+      ETA: "2024-02-22",
+      status: "In Progress",
+      budget: "$55,000",
+      location: "303 Tech Lane, Austin, TX",
+      squareFootage: "2800",
+      systemCapacity: "10",
+      expectedOutput: "14000",
+      materials: ["Monocrystalline Panels", "Battery System", "Hybrid System"],
+      notes: "Full home backup system. Tesla Powerwall installation included.",
     },
     {
       id: 7,
-      projectName: "Security Audit",
+      projectName: "Clay Tile Roof Installation - Mediterranean Villa",
+      clientName: "Isabella Romano",
+      projectType: "roofing",
+      subType: "New Installation",
+      propertyType: "Residential - Single Family",
       createdOn: "2024-01-05",
-      ETA: "2024-01-31",
-      status: "Pending",
-      budget: "$40,000",
+      ETA: "2024-03-31",
+      status: "Planning",
+      budget: "$78,000",
+      location: "404 Villa Way, Santa Barbara, CA",
+      squareFootage: "4500",
+      roofPitch: "8:12",
+      materials: ["Clay Tiles"],
+      notes: "Imported Italian tiles. Complex architectural details.",
     },
     {
       id: 8,
-      projectName: "Cloud Infrastructure Setup",
-      createdOn: "2023-08-14",
-      ETA: "2023-10-30",
-      status: "Completed",
-      budget: "$45,000",
+      projectName: "Commercial Solar Array - Shopping Center",
+      clientName: "Metro Mall Partners",
+      projectType: "solar",
+      subType: "Panel Installation",
+      propertyType: "Commercial - Retail",
+      createdOn: "2023-12-14",
+      ETA: "2024-04-30",
+      status: "In Progress",
+      budget: "$245,000",
+      location: "505 Mall Circle, Denver, CO",
+      squareFootage: "50000",
+      systemCapacity: "175",
+      expectedOutput: "250000",
+      materials: ["Thin Film Panels", "Inverter", "Battery System"],
+      notes: "Parking lot canopy installation. Includes EV charging stations.",
     },
     {
       id: 9,
-      projectName: "Marketing Dashboard",
-      createdOn: "2023-12-18",
-      ETA: "2024-02-14",
-      status: "In Progress",
-      budget: "$50,000",
+      projectName: "Roof Inspection & Maintenance - Johnson Building",
+      clientName: "Johnson & Associates",
+      projectType: "roofing",
+      subType: "Maintenance",
+      propertyType: "Commercial - Office",
+      createdOn: "2024-01-18",
+      ETA: "2024-01-25",
+      status: "Pending",
+      budget: "$4,500",
+      location: "606 Business Ave, Seattle, WA",
+      squareFootage: "8000",
+      roofPitch: "1:12",
+      materials: ["Flat Roof/EPDM"],
+      notes:
+        "Annual inspection and preventive maintenance. Check drainage systems.",
     },
     {
       id: 10,
-      projectName: "Customer Portal",
+      projectName: "Metal Roofing Installation - Industrial Warehouse",
+      clientName: "Global Logistics Inc",
+      projectType: "roofing",
+      subType: "New Installation",
+      propertyType: "Commercial - Industrial",
       createdOn: "2024-01-22",
-      ETA: "2024-06-30",
+      ETA: "2024-03-30",
       status: "Planning",
-      budget: "$55,000",
+      budget: "$185,000",
+      location: "707 Industrial Park, Chicago, IL",
+      squareFootage: "35000",
+      roofPitch: "3:12",
+      materials: ["Metal"],
+      notes:
+        "Insulated metal panels. Including skylights and ventilation systems.",
+    },
+    {
+      id: 11,
+      projectName: "Solar Shingle Installation - Modern Home",
+      clientName: "Emily Chen",
+      projectType: "solar",
+      subType: "Solar Shingles",
+      propertyType: "Residential - Single Family",
+      createdOn: "2024-01-08",
+      ETA: "2024-02-28",
+      status: "Delayed",
+      budget: "$65,000",
+      location: "808 Modern Dr, Portland, OR",
+      squareFootage: "2500",
+      systemCapacity: "12",
+      expectedOutput: "15000",
+      materials: ["Solar Shingles", "Battery System"],
+      notes: "Tesla Solar Roof installation. Permit approval delayed.",
+    },
+    {
+      id: 12,
+      projectName: "Flat Roof Repair - Commercial Plaza",
+      clientName: "Plaza Management Group",
+      projectType: "roofing",
+      subType: "Repair",
+      propertyType: "Commercial - Retail",
+      createdOn: "2024-01-20",
+      ETA: "2024-02-10",
+      status: "In Progress",
+      budget: "$28,000",
+      location: "909 Plaza Blvd, Dallas, TX",
+      squareFootage: "12000",
+      roofPitch: "1:12",
+      materials: ["Flat Roof/EPDM"],
+      notes:
+        "Addressing multiple leak points. Installing additional insulation.",
     },
   ]);
+
+  const projectTypes = {
+    solar: {
+      label: "Solar Installation",
+      subtypes: [
+        "Panel Installation",
+        "Battery System",
+        "Solar Shingles",
+        "Maintenance",
+        "Repair",
+      ],
+    },
+    roofing: {
+      label: "Roofing",
+      subtypes: [
+        "New Installation",
+        "Replacement",
+        "Repair",
+        "Maintenance",
+        "Emergency Repair",
+      ],
+    },
+  };
+
+  const roofingMaterials = [
+    "Concrete Tiles",
+    "Clay Tiles",
+    "Metal",
+    "Asphalt Shingles",
+    "Slate",
+    "Flat Roof/EPDM",
+    "Green Roof",
+    "Solar Shingles",
+  ];
+
+  const solarProducts = [
+    "Monocrystalline Panels",
+    "Polycrystalline Panels",
+    "Thin Film Panels",
+    "Solar Tiles",
+    "Solar Shingles",
+    "Battery System",
+    "Inverter",
+    "Hybrid System",
+  ];
+
+  const propertyTypes = [
+    "Residential - Single Family",
+    "Residential - Multi Family",
+    "Commercial - Office",
+    "Commercial - Retail",
+    "Commercial - Industrial",
+    "Institutional",
+    "Agricultural",
+  ];
 
   const [newProject, setNewProject] = useState({
     projectName: "",
@@ -115,6 +308,19 @@ const Project = () => {
     ETA: "",
     budget: "",
     status: "Planning",
+    projectType: "",
+    subType: "",
+    propertyType: "",
+    materials: [],
+    squareFootage: "",
+    roofPitch: "",
+    systemCapacity: "",
+    batteryBackup: false,
+    expectedOutput: "",
+    clientName: "",
+    location: "",
+    permitRequired: false,
+    notes: "",
   });
 
   const resetForm = () => {
@@ -124,6 +330,19 @@ const Project = () => {
       ETA: "",
       budget: "",
       status: "Planning",
+      projectType: "",
+      subType: "",
+      propertyType: "",
+      materials: [],
+      squareFootage: "",
+      roofPitch: "",
+      systemCapacity: "",
+      batteryBackup: false,
+      expectedOutput: "",
+      clientName: "",
+      location: "",
+      permitRequired: false,
+      notes: "",
     });
     setIsEditMode(false);
     setSelectedProject(null);
@@ -204,18 +423,30 @@ const Project = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 90,
+      width: 70,
     },
     {
       field: "projectName",
       headerName: "Project Name",
-      width: 200,
+      width: 250,
+      editable: false,
+    },
+    {
+      field: "projectType",
+      headerName: "Type",
+      width: 130,
+      editable: false,
+    },
+    {
+      field: "clientName",
+      headerName: "Client",
+      width: 150,
       editable: false,
     },
     {
       field: "createdOn",
       headerName: "Created On",
-      width: 150,
+      width: 110,
       editable: false,
       valueFormatter: (params) => {
         if (!params.value) return "";
@@ -228,7 +459,7 @@ const Project = () => {
     {
       field: "ETA",
       headerName: "ETA",
-      width: 150,
+      width: 110,
       editable: false,
       valueFormatter: (params) => {
         if (!params.value) return "";
@@ -238,11 +469,16 @@ const Project = () => {
           : "Invalid Date";
       },
     },
-    { field: "budget", headerName: "Budget", width: 150, editable: false },
+    {
+      field: "budget",
+      headerName: "Budget",
+      width: 120,
+      editable: false,
+    },
     {
       field: "status",
       headerName: "Status",
-      width: 180,
+      width: 130,
       sortable: false,
       renderCell: (params) => (
         <Chip
@@ -372,7 +608,7 @@ const Project = () => {
       <Dialog
         open={openModal}
         onClose={handleCloseModal}
-        maxWidth="sm"
+        maxWidth="md"
         fullWidth
       >
         <DialogTitle>
@@ -380,7 +616,7 @@ const Project = () => {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 name="projectName"
                 label="Project Name"
@@ -390,7 +626,169 @@ const Project = () => {
                 required
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="clientName"
+                label="Client Name"
+                fullWidth
+                value={newProject.clientName}
+                onChange={handleInputChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Project Type</InputLabel>
+                <Select
+                  name="projectType"
+                  value={newProject.projectType}
+                  onChange={handleInputChange}
+                  label="Project Type"
+                >
+                  {Object.entries(projectTypes).map(([key, type]) => (
+                    <MenuItem key={key} value={key}>
+                      {type.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Sub Type</InputLabel>
+                <Select
+                  name="subType"
+                  value={newProject.subType}
+                  onChange={handleInputChange}
+                  label="Sub Type"
+                >
+                  {newProject.projectType &&
+                    projectTypes[newProject.projectType].subtypes.map(
+                      (subtype) => (
+                        <MenuItem key={subtype} value={subtype}>
+                          {subtype}
+                        </MenuItem>
+                      )
+                    )}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Property Type</InputLabel>
+                <Select
+                  name="propertyType"
+                  value={newProject.propertyType}
+                  onChange={handleInputChange}
+                  label="Property Type"
+                >
+                  {propertyTypes.map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="location"
+                label="Project Location"
+                fullWidth
+                value={newProject.location}
+                onChange={handleInputChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="squareFootage"
+                label="Square Footage"
+                fullWidth
+                value={newProject.squareFootage}
+                onChange={handleInputChange}
+                type="number"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">sq ft</InputAdornment>
+                  ),
+                }}
+                required
+              />
+            </Grid>
+
+            {newProject.projectType === "roofing" && (
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  name="roofPitch"
+                  label="Roof Pitch"
+                  fullWidth
+                  value={newProject.roofPitch}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 4:12"
+                />
+              </Grid>
+            )}
+
+            {newProject.projectType === "solar" && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="systemCapacity"
+                    label="System Capacity"
+                    fullWidth
+                    value={newProject.systemCapacity}
+                    onChange={handleInputChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">kW</InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    name="expectedOutput"
+                    label="Expected Annual Output"
+                    fullWidth
+                    value={newProject.expectedOutput}
+                    onChange={handleInputChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">kWh</InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+              </>
+            )}
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Materials</InputLabel>
+                <Select
+                  name="materials"
+                  multiple
+                  value={newProject.materials}
+                  onChange={handleInputChange}
+                  label="Materials"
+                >
+                  {newProject.projectType === "roofing"
+                    ? roofingMaterials.map((material) => (
+                        <MenuItem key={material} value={material}>
+                          {material}
+                        </MenuItem>
+                      ))
+                    : solarProducts.map((product) => (
+                        <MenuItem key={product} value={product}>
+                          {product}
+                        </MenuItem>
+                      ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
               <TextField
                 name="createdOn"
                 label="Created On"
@@ -402,7 +800,7 @@ const Project = () => {
                 required
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 name="ETA"
                 label="ETA"
@@ -414,7 +812,7 @@ const Project = () => {
                 required
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 name="budget"
                 label="Budget"
@@ -425,22 +823,33 @@ const Project = () => {
                 required
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  name="status"
+                  value={newProject.status}
+                  onChange={handleInputChange}
+                  label="Status"
+                >
+                  {Object.keys(statusColors).map((status) => (
+                    <MenuItem key={status} value={status}>
+                      {status}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
               <TextField
-                name="status"
-                label="Status"
-                select
+                name="notes"
+                label="Project Notes"
                 fullWidth
-                value={newProject.status}
+                multiline
+                rows={4}
+                value={newProject.notes}
                 onChange={handleInputChange}
-                required
-              >
-                {Object.keys(statusColors).map((status) => (
-                  <MenuItem key={status} value={status}>
-                    {status}
-                  </MenuItem>
-                ))}
-              </TextField>
+              />
             </Grid>
           </Grid>
         </DialogContent>
