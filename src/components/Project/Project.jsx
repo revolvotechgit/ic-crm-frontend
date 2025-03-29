@@ -22,6 +22,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { DataGrid } from "@mui/x-data-grid";
 import Chip from "@mui/material/Chip";
+import SearchIcon from "@mui/icons-material/Search";
 
 const Project = () => {
   const theme = useTheme();
@@ -30,6 +31,7 @@ const Project = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [projects, setProjects] = useState([
     {
       id: 1,
@@ -522,6 +524,18 @@ const Project = () => {
     },
   ];
 
+  // Add this new function to filter projects
+  const filteredProjects = projects.filter((project) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      project.projectName.toLowerCase().includes(searchLower) ||
+      project.clientName.toLowerCase().includes(searchLower) ||
+      project.location.toLowerCase().includes(searchLower) ||
+      project.status.toLowerCase().includes(searchLower) ||
+      project.projectType.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <Container maxWidth="xl" sx={{ ml: 4 }}>
       <Box sx={{ py: 4 }}>
@@ -542,6 +556,7 @@ const Project = () => {
           </Typography>
         </Box>
       </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -574,6 +589,35 @@ const Project = () => {
         </Box>
       </Box>
 
+      {/* Add Search Box */}
+      <Box sx={{ mt: 3, mb: 2 }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search projects by name, client, location, status, or type..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="action" />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            backgroundColor: theme.palette.background.paper,
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: theme.palette.divider,
+              },
+              "&:hover fieldset": {
+                borderColor: theme.palette.primary.main,
+              },
+            },
+          }}
+        />
+      </Box>
+
       <Box
         sx={{
           height: 580,
@@ -582,7 +626,7 @@ const Project = () => {
         }}
       >
         <DataGrid
-          rows={projects}
+          rows={filteredProjects}
           columns={columns}
           initialState={{
             pagination: {
