@@ -1,5 +1,19 @@
 import React, { useState } from "react";
-import { Container, Box, Typography, Button, useTheme } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  Grid,
+  DialogContentText,
+} from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { DataGrid } from "@mui/x-data-grid";
@@ -8,88 +22,11 @@ import Chip from "@mui/material/Chip";
 const Project = () => {
   const theme = useTheme();
   const [value, setValue] = useState("one");
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const statusColors = {
-    Completed: theme.palette.success.main,
-    "In Progress": theme.palette.info.main,
-    "On Hold": theme.palette.warning.main,
-    Delayed: theme.palette.error.main,
-    Pending:
-      theme.palette.mode === "dark"
-        ? theme.palette.grey[600]
-        : theme.palette.grey[500],
-    Planning: theme.palette.primary.main,
-  };
-
-  const columns = [
-    {
-      field: "id",
-      headerName: "ID",
-      width: 90,
-    },
-    {
-      field: "projectName",
-      headerName: "Project Name",
-      width: 200,
-      editable: false,
-    },
-    {
-      field: "createdOn",
-      headerName: "Created On",
-      width: 150,
-      editable: false,
-      valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
-    },
-    {
-      field: "ETA",
-      headerName: "ETA",
-      width: 150,
-      editable: false,
-      valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
-    },
-    { field: "budget", headerName: "Budget", width: 150, editable: false },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 180,
-      sortable: false,
-      renderCell: (params) => (
-        <Chip
-          label={params.value}
-          sx={{
-            backgroundColor:
-              statusColors[params.value] || theme.palette.grey[300],
-            color: theme.palette.getContrastText(
-              statusColors[params.value] || theme.palette.grey[300]
-            ),
-            fontWeight: 500,
-            width: "100%",
-          }}
-        />
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 150,
-      sortable: false,
-      renderCell: () => (
-        <Box sx={{ display: "flex", gap: 1, mt: 1.5 }}>
-          <Button size="small" variant="outlined">
-            Edit
-          </Button>
-          <Button size="small" variant="outlined" color="error">
-            Delete
-          </Button>
-        </Box>
-      ),
-    },
-  ];
-
-  const rows = [
+  const [openModal, setOpenModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projects, setProjects] = useState([
     {
       id: 1,
       projectName: "Website Redesign",
@@ -170,6 +107,183 @@ const Project = () => {
       status: "Planning",
       budget: "$55,000",
     },
+  ]);
+
+  const [newProject, setNewProject] = useState({
+    projectName: "",
+    createdOn: new Date().toISOString().split("T")[0],
+    ETA: "",
+    budget: "",
+    status: "Planning",
+  });
+
+  const resetForm = () => {
+    setNewProject({
+      projectName: "",
+      createdOn: new Date().toISOString().split("T")[0],
+      ETA: "",
+      budget: "",
+      status: "Planning",
+    });
+    setIsEditMode(false);
+    setSelectedProject(null);
+  };
+
+  const handleOpenModal = (mode = "create", project = null) => {
+    setIsEditMode(mode === "edit");
+    if (mode === "edit" && project) {
+      setNewProject({ ...project });
+      setSelectedProject(project);
+    } else {
+      resetForm();
+    }
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    resetForm();
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setNewProject((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleAddProject = () => {
+    if (isEditMode) {
+      // Update existing project
+      setProjects(
+        projects.map((project) =>
+          project.id === selectedProject.id
+            ? { ...newProject, id: project.id }
+            : project
+        )
+      );
+    } else {
+      // Add new project
+      const newId = Math.max(...projects.map((p) => p.id)) + 1;
+      setProjects([...projects, { ...newProject, id: newId }]);
+    }
+    handleCloseModal();
+  };
+
+  const handleDeleteClick = (project) => {
+    setSelectedProject(project);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setProjects(
+      projects.filter((project) => project.id !== selectedProject.id)
+    );
+    setDeleteConfirmOpen(false);
+    setSelectedProject(null);
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const statusColors = {
+    Completed: theme.palette.success.main,
+    "In Progress": theme.palette.info.main,
+    "On Hold": theme.palette.warning.main,
+    Delayed: theme.palette.error.main,
+    Pending:
+      theme.palette.mode === "dark"
+        ? theme.palette.grey[600]
+        : theme.palette.grey[500],
+    Planning: theme.palette.primary.main,
+  };
+
+  const columns = [
+    {
+      field: "id",
+      headerName: "ID",
+      width: 90,
+    },
+    {
+      field: "projectName",
+      headerName: "Project Name",
+      width: 200,
+      editable: false,
+    },
+    {
+      field: "createdOn",
+      headerName: "Created On",
+      width: 150,
+      editable: false,
+      valueFormatter: (params) => {
+        if (!params.value) return "";
+        const date = new Date(params.value);
+        return date instanceof Date && !isNaN(date)
+          ? date.toLocaleDateString()
+          : "Invalid Date";
+      },
+    },
+    {
+      field: "ETA",
+      headerName: "ETA",
+      width: 150,
+      editable: false,
+      valueFormatter: (params) => {
+        if (!params.value) return "";
+        const date = new Date(params.value);
+        return date instanceof Date && !isNaN(date)
+          ? date.toLocaleDateString()
+          : "Invalid Date";
+      },
+    },
+    { field: "budget", headerName: "Budget", width: 150, editable: false },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 180,
+      sortable: false,
+      renderCell: (params) => (
+        <Chip
+          label={params.value}
+          sx={{
+            backgroundColor:
+              statusColors[params.value] || theme.palette.grey[300],
+            color: theme.palette.getContrastText(
+              statusColors[params.value] || theme.palette.grey[300]
+            ),
+            fontWeight: 500,
+            width: "100%",
+          }}
+        />
+      ),
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", gap: 1, mt: 1.5 }}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => handleOpenModal("edit", params.row)}
+          >
+            Edit
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            color="error"
+            onClick={() => handleDeleteClick(params.row)}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
+    },
   ];
 
   return (
@@ -217,6 +331,7 @@ const Project = () => {
             variant="contained"
             color="primary"
             sx={{ textTransform: "none" }}
+            onClick={() => handleOpenModal("create")}
           >
             Add Project
           </Button>
@@ -231,7 +346,7 @@ const Project = () => {
         }}
       >
         <DataGrid
-          rows={rows}
+          rows={projects}
           columns={columns}
           initialState={{
             pagination: {
@@ -252,6 +367,118 @@ const Project = () => {
           }}
         />
       </Box>
+
+      {/* Add/Edit Project Modal */}
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          {isEditMode ? "Edit Project" : "Add New Project"}
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={12}>
+              <TextField
+                name="projectName"
+                label="Project Name"
+                fullWidth
+                value={newProject.projectName}
+                onChange={handleInputChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                name="createdOn"
+                label="Created On"
+                type="date"
+                fullWidth
+                value={newProject.createdOn}
+                onChange={handleInputChange}
+                InputLabelProps={{ shrink: true }}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                name="ETA"
+                label="ETA"
+                type="date"
+                fullWidth
+                value={newProject.ETA}
+                onChange={handleInputChange}
+                InputLabelProps={{ shrink: true }}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                name="budget"
+                label="Budget"
+                fullWidth
+                value={newProject.budget}
+                onChange={handleInputChange}
+                placeholder="$0"
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                name="status"
+                label="Status"
+                select
+                fullWidth
+                value={newProject.status}
+                onChange={handleInputChange}
+                required
+              >
+                {Object.keys(statusColors).map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button
+            onClick={handleAddProject}
+            variant="contained"
+            color="primary"
+          >
+            {isEditMode ? "Save Changes" : "Add Project"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete the project "
+            {selectedProject?.projectName}"? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
