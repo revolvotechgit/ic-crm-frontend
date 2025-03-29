@@ -35,6 +35,7 @@ import ResetPassword from "./components/Auth/ResetPassword";
 import { ProtectedRoutes, AuthRoutes } from "./utils/ProtectectedRoutes";
 import { AuthProvider } from "./context/AuthContext";
 import Project from "./components/Project/Project";
+import ProjectDetails from "./components/Project/ProjectDetails";
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 // Wrapper component to handle layout selection
@@ -49,20 +50,22 @@ const AppContent = () => {
   ].includes(location.pathname);
 
   // Check if the current path matches any of our defined routes
-  const isKnownRoute = [
-    "/",
-    "/projects",
-    "/invoices",
-    "/team",
-    "/analytics",
-    "/settings",
-    "/help",
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
-    "/reset-code",
-  ].includes(location.pathname);
+  const isKnownRoute =
+    [
+      "/",
+      "/projects",
+      "/invoices",
+      "/team",
+      "/analytics",
+      "/settings",
+      "/help",
+      "/login",
+      "/register",
+      "/forgot-password",
+      "/reset-password",
+      "/reset-code",
+    ].includes(location.pathname) ||
+    location.pathname.match(/^\/projects\/\d+$/);
 
   // If it's not a known route, show the 404 page without any layout
   if (!isKnownRoute) {
@@ -101,6 +104,7 @@ const AppContent = () => {
           <Route element={<ProtectedRoutes />}>
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Project />} />
+            <Route path="/projects/:id" element={<ProjectDetails />} />
             <Route path="/invoices" element={<div>Invoices Page</div>} />
             <Route path="/team" element={<div>Team Page</div>} />
             <Route path="/analytics" element={<div>Analytics Page</div>} />

@@ -26,6 +26,7 @@ import Tab from "@mui/material/Tab";
 import { DataGrid } from "@mui/x-data-grid";
 import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 
 const Project = () => {
   const theme = useTheme();
@@ -424,6 +425,15 @@ const Project = () => {
     Planning: theme.palette.primary.main,
   };
 
+  const navigate = useNavigate();
+
+  const handleProjectClick = (projectId) => {
+    const selectedProject = projects.find(
+      (project) => project.id === projectId
+    );
+    navigate(`/projects/${projectId}`, { state: { project: selectedProject } });
+  };
+
   const columns = [
     {
       field: "id",
@@ -435,6 +445,20 @@ const Project = () => {
       headerName: "Project Name",
       width: 250,
       editable: false,
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            cursor: "pointer",
+            "&:hover": {
+              color: theme.palette.primary.main,
+              textDecoration: "underline",
+            },
+          }}
+          onClick={() => handleProjectClick(params.row.id)}
+        >
+          {params.value}
+        </Typography>
+      ),
     },
     {
       field: "projectType",
@@ -544,7 +568,17 @@ const Project = () => {
     return (
       <Stack spacing={2}>
         {projects.map((project) => (
-          <Card key={project.id} sx={{ width: "100%" }}>
+          <Card
+            key={project.id}
+            sx={{
+              width: "100%",
+              cursor: "pointer",
+              "&:hover": {
+                boxShadow: 6,
+              },
+            }}
+            onClick={() => handleProjectClick(project.id)}
+          >
             <CardContent>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
