@@ -2,6 +2,9 @@ import React, { lazy } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
+import PublicRoute from '../components/auth/PublicRoute';
+import RootRedirect from '../components/auth/RootRedirect';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -180,9 +183,9 @@ const SimpletreeSelection = Loadable(
 const Router = [
   {
     path: '/',
-    element: <FullLayout />,
+    element: <ProtectedRoute><FullLayout /></ProtectedRoute>,
     children: [
-      { path: '/', element: <Navigate to="/dashboards/modern" /> },
+      { path: '/', element: <RootRedirect /> },
       { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
       { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
       { path: '/apps/chats', element: <Chats /> },
@@ -289,28 +292,34 @@ const Router = [
     ],
   },
   {
+    path: '/auth',
+    element: <PublicRoute><BlankLayout /></PublicRoute>,
+    children: [
+      { path: '404', element: <Error /> },
+      { path: 'login', element: <Login /> },
+      { path: 'login2', element: <Login2 /> },
+      { path: 'register', element: <Register /> },
+      { path: 'register2', element: <Register2 /> },
+      { path: 'forgot-password', element: <ForgotPassword /> },
+      { path: 'forgot-password2', element: <ForgotPassword2 /> },
+      { path: 'two-steps', element: <TwoSteps /> },
+      { path: 'two-steps2', element: <TwoSteps2 /> },
+      { path: 'maintenance', element: <Maintenance /> },
+      { path: '*', element: <Navigate to="/auth/404" /> },
+    ],
+  },
+  {
     path: '/',
     element: <BlankLayout />,
     children: [
-      { path: '/auth/404', element: <Error /> },
-      { path: '/auth/login', element: <Login /> },
-      { path: '/auth/login2', element: <Login2 /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/register2', element: <Register2 /> },
-      { path: '/auth/forgot-password', element: <ForgotPassword /> },
-      { path: '/auth/forgot-password2', element: <ForgotPassword2 /> },
-      { path: '/auth/two-steps', element: <TwoSteps /> },
-      { path: '/auth/two-steps2', element: <TwoSteps2 /> },
-      { path: '/auth/maintenance', element: <Maintenance /> },
-      { path: '/landingpage', element: <Landingpage /> },
-      { path: '/frontend-pages/homepage', element: <Homepage /> },
-      { path: '/frontend-pages/about', element: <About /> },
-      { path: '/frontend-pages/contact', element: <Contact /> },
-      { path: '/frontend-pages/portfolio', element: <Portfolio /> },
-      { path: '/frontend-pages/pricing', element: <PagePricing /> },
-      { path: '/frontend-pages/blog', element: <BlogPage /> },
-      { path: '/frontend-pages/blog/detail/:id', element: <BlogPost /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
+      { path: 'landingpage', element: <Landingpage /> },
+      { path: 'frontend-pages/homepage', element: <Homepage /> },
+      { path: 'frontend-pages/about', element: <About /> },
+      { path: 'frontend-pages/contact', element: <Contact /> },
+      { path: 'frontend-pages/portfolio', element: <Portfolio /> },
+      { path: 'frontend-pages/pricing', element: <PagePricing /> },
+      { path: 'frontend-pages/blog', element: <BlogPage /> },
+      { path: 'frontend-pages/blog/detail/:id', element: <BlogPost /> },
     ],
   },
 ];

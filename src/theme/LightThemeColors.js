@@ -3,16 +3,16 @@ const LightThemeColors = [
     name: 'BLUE_THEME',
     palette: {
       primary: {
-        main: '#5D87FF',
-        light: '#ECF2FF',
-        dark: '#4570EA',
-        contrastText: '#ffffff',
+        main: '#FFB800',
+        light: '#FFF9E6',
+        dark: '#E6A500',
+        contrastText: '#000000',
       },
       secondary: {
-        main: '#49BEFF',
-        light: '#E8F7FF',
-        dark: '#23afdb',
-        contrastText: '#ffffff',
+        main: '#FFA726',
+        light: '#FFF3E0',
+        dark: '#FF8F00',
+        contrastText: '#000000',
       },
     },
   },
@@ -20,10 +20,10 @@ const LightThemeColors = [
     name: 'AQUA_THEME',
     palette: {
       primary: {
-        main: '#0074BA',
-        light: '#EFF9FF',
-        dark: '#006DAF',
-        contrastText: '#ffffff',
+        main: '#FFB800',
+        light: '#FFF9E6',
+        dark: '#E6A500',
+        contrastText: '#000000',
       },
       secondary: {
         main: '#47D7BC',
@@ -37,10 +37,10 @@ const LightThemeColors = [
     name: 'PURPLE_THEME',
     palette: {
       primary: {
-        main: '#763EBD',
-        light: '#F2ECF9',
-        dark: '#6E35B7',
-        contrastText: '#ffffff',
+        main: '#FFB800',
+        light: '#FFF9E6',
+        dark: '#E6A500',
+        contrastText: '#000000',
       },
       secondary: {
         main: '#95CFD5',
@@ -54,10 +54,10 @@ const LightThemeColors = [
     name: 'GREEN_THEME',
     palette: {
       primary: {
-        main: '#0A7EA4',
-        light: '#F4F9FB',
-        dark: '#06769A',
-        contrastText: '#ffffff',
+        main: '#FFB800',
+        light: '#FFF9E6',
+        dark: '#E6A500',
+        contrastText: '#000000',
       },
       secondary: {
         main: '#CCDA4E',
@@ -71,10 +71,10 @@ const LightThemeColors = [
     name: 'CYAN_THEME',
     palette: {
       primary: {
-        main: '#01C0C8',
-        light: '#EBF9FA',
-        dark: '#00B9C0',
-        contrastText: '#ffffff',
+        main: '#FFB800',
+        light: '#FFF9E6',
+        dark: '#E6A500',
+        contrastText: '#000000',
       },
       secondary: {
         main: '#FB9678',
@@ -88,10 +88,10 @@ const LightThemeColors = [
     name: 'ORANGE_THEME',
     palette: {
       primary: {
-        main: '#FA896B',
-        light: '#FBF2EF',
-        dark: '#F48162',
-        contrastText: '#ffffff',
+        main: '#FFB800',
+        light: '#FFF9E6',
+        dark: '#E6A500',
+        contrastText: '#000000',
       },
       secondary: {
         main: '#0074BA',

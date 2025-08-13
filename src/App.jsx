@@ -4,7 +4,8 @@ import { ThemeSettings } from './theme/Theme';
 import RTL from './layouts/full/shared/customizer/RTL';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { RouterProvider } from 'react-router';
-import router from './routes/Router'
+import router from './routes/Router';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
@@ -12,12 +13,14 @@ function App() {
   const customizer = useSelector((state) => state.customizer);
 
   return (
-    <ThemeProvider theme={theme}>
-      <RTL direction={customizer.activeDir}>
-        <CssBaseline />
-        <RouterProvider router={router} />
-      </RTL>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <RTL direction={customizer.activeDir}>
+          <CssBaseline />
+          <RouterProvider router={router} />
+        </RTL>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

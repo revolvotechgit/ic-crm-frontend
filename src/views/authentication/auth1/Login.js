@@ -19,13 +19,13 @@ const Login = () => (
           position: 'relative',
           '&:before': {
             content: '""',
-            background: 'radial-gradient(#d2f1df, #d3d7fa, #bad8f4)',
+            background: 'radial-gradient(circle at 20% 80%, rgba(255, 184, 0, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 167, 38, 0.15) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255, 200, 50, 0.1) 0%, transparent 50%)',
             backgroundSize: '400% 400%',
-            animation: 'gradient 15s ease infinite',
+            animation: 'gradient 20s ease infinite',
             position: 'absolute',
             height: '100%',
             width: '100%',
-            opacity: '0.3',
+            opacity: '0.8',
           },
         }}
       >
