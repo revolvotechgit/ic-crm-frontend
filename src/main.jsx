@@ -1,16 +1,19 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import "./styles/styles.css";
-import { AuthProvider } from "./context/AuthContext";
+import React, { Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { Provider } from 'react-redux';
+import { store } from './store/Store';
+import Spinner from './views/spinner/Spinner';
+import './_mockApis';
+import './utils/i18n';
+import './theme/darkmode-override.css';
+import './theme/modern-enhancements.css';
+import './theme/micro-interactions.css';
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-
-root.render(
-  <React.StrictMode>
-    <AuthProvider>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    <Suspense fallback={<Spinner />}>
       <App />
-    </AuthProvider>
-  </React.StrictMode>
-);
+    </Suspense>
+  </Provider>,
+)
