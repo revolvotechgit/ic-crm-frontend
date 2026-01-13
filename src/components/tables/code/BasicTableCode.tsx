@@ -1,9 +1,9 @@
-import CodeDialog from "src/components/shared/CodeDialog";
+import CodeDialog from 'src/components/shared/CodeDialog';
 const BasicTableCode = () => {
-    return (
-        <>
-            <CodeDialog>
-                {`
+  return (
+    <>
+      <CodeDialog>
+        {`
 import React from 'react';
 import {
   TableContainer,
@@ -37,7 +37,7 @@ import {
   IconPlus,
   IconTrash,
   IconX,
-} from '@tabler/icons';
+} from '@tabler/icons-react';
 
 
 interface rowsType {
@@ -242,9 +242,9 @@ const Table1 = () => {
 export default Table1;
 
 `}
-            </CodeDialog>
-        </>
-    );
+      </CodeDialog>
+    </>
+  );
 };
 
 export default BasicTableCode;

@@ -12,3 +12,7 @@
 .dozenscarousel.slick-slider .slick-list {
   margin: 0 0 0 -15px;
 }
+
+.dozenscarousel {
+  margin-left: 15px;
+}

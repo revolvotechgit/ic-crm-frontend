@@ -1,18 +1,28 @@
 .rbc-event.event-azure {
-  background-color: #1a97f5;
+  background-color: #1a97f520;
+  color:#1a97f5;
+  border-color: #1a97f5;
 }
 
 .rbc-event.event-default {
-  background-color: #615dff;
+  background-color: #615dff20;
+  color:#615dff;
+  border-color: #615dff;
 }
 .rbc-event.event-red {
-  background-color: #fc4b6c;
+  background-color: #fc4b6c20;
+  color:#fc4b6c;
+  border-color: #fc4b6c;
 }
 .rbc-event.event-green {
-  background-color: #39b69a;
+  background-color: #39b69a20;
+  color:#39b69a;
+  border-color: #39b69a;
 }
 .rbc-event.event-warning {
-  background-color: #fdd43f;
+  background-color: #fdd43f20;
+  color:#fdd43f;
+  border-color: #fdd43f;
 }
 .rbc-off-range-bg {
   background-color: #d2d2d20d;
@@ -35,6 +45,15 @@
 .darkbg .rbc-toolbar button,
 .darkbg .rbc-time-content > * + * > * {
   border-color: #343e54;
+}
+.rbc-event{
+  border-width: 0 0 0 4px;
+    border-style: solid;
+    padding: 8px 10px;
+    margin-bottom: 1px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
 }
 .rbc-event:focus,
 .rbc-day-slot .rbc-background-event:focus {
